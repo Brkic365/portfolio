@@ -18,6 +18,7 @@ export interface FileItem {
     icon?: 'game' | 'python' | 'web'; // Specific for lab items
     demoUrl?: string;
     previewVideo?: string;
+    client?: boolean;
 }
 
 export interface Directory {
@@ -37,6 +38,7 @@ const mapProjectToFileItem = (p: Project): FileItem => ({
     githubUrl: p.githubUrl,
     coverImage: p.coverImage,
     previewVideo: p.previewVideo,
+    client: p.client,
 });
 
 // Helper to convert LabItem to FileItem

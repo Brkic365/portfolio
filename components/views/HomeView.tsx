@@ -48,7 +48,7 @@ const HomeView = () => {
         <DesktopItem
           icon="💾"
           label="Workspace"
-          onClick={() => router.push('?path=/projects')}
+          onClick={() => router.push('/projects')}
         />
       </div>
 

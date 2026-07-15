@@ -15,7 +15,7 @@ const Breadcrumbs = ({ path }: BreadcrumbsProps) => {
   const handleNavigate = (index: number) => {
     if (index < 3) return; // Don't navigate on root/users/antonio
     const newPath = '/' + segments.slice(3, index + 1).join('/');
-    router.push(`?path=${newPath}`);
+    router.push(newPath);
   };
 
   const isActive = (index: number) => index === segments.length - 1;

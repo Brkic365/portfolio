@@ -1,7 +1,7 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, ExternalLink, Github } from 'lucide-react';
+import Image from 'next/image';
+import { ExternalLink, Github } from 'lucide-react';
 import { Project, LabItem } from '@/data/projects';
 import Window from '../ui/Window';
 
@@ -36,10 +36,12 @@ const OSWindow = ({ item, isOpen, onClose }: OSWindowProps) => {
               className="w-full h-full object-cover"
             />
           ) : item.coverImage?.startsWith('/') ? (
-            <img
+            <Image
               src={item.coverImage}
-              alt={item.name}
-              className="w-full h-full object-cover"
+              alt={`${item.name} cover`}
+              fill
+              sizes="(max-width: 900px) 100vw, 900px"
+              className="object-cover"
             />
           ) : (
             <span>{item.coverImage || (isProject ? '📦' : '💻')}</span>

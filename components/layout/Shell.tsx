@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { Home, Briefcase, FlaskConical, User, Mail } from 'lucide-react';
+import { useState, useSyncExternalStore } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Home, Briefcase, FlaskConical, Mail } from 'lucide-react';
 import Breadcrumbs from './Breadcrumbs';
 import MobileDock from './MobileDock';
 import Wallpaper from '../Wallpaper';
@@ -12,24 +12,27 @@ interface ShellProps {
   children: React.ReactNode;
 }
 
+// Subscribe to viewport width changes the React-idiomatic way (SSR-safe).
+const subscribeToResize = (callback: () => void) => {
+  window.addEventListener('resize', callback);
+  return () => window.removeEventListener('resize', callback);
+};
+
 const Shell = ({ children }: ShellProps) => {
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const currentPath = searchParams.get('path') || '/';
-  const [isDesktop, setIsDesktop] = useState(false);
+  const currentPath = usePathname();
   const [isContactOpen, setIsContactOpen] = useState(false);
 
-  useEffect(() => {
-    setIsDesktop(window.innerWidth >= 1024);
-    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const isDesktop = useSyncExternalStore(
+    subscribeToResize,
+    () => window.innerWidth >= 1024, // client value
+    () => false, // server fallback
+  );
 
   const navItems = [
-    { name: 'Home', path: '/', icon: Home, action: () => router.push('?path=/') },
-    { name: 'Projects', path: '/projects', icon: Briefcase, action: () => router.push('?path=/projects') },
-    { name: 'Prototypes', path: '/prototypes', icon: FlaskConical, action: () => router.push('?path=/prototypes') },
+    { name: 'Home', path: '/', icon: Home, action: () => router.push('/') },
+    { name: 'Projects', path: '/projects', icon: Briefcase, action: () => router.push('/projects') },
+    { name: 'Prototypes', path: '/prototypes', icon: FlaskConical, action: () => router.push('/prototypes') },
     { name: 'Contact', path: '#contact', icon: Mail, action: () => setIsContactOpen(true) }, // Special action for Contact
   ];
 
@@ -56,8 +59,10 @@ const Shell = ({ children }: ShellProps) => {
                   : 'text-slate-400 hover:bg-white/10 hover:text-slate-200'
                   }`}
                 title={item.name}
+                aria-label={item.name}
+                aria-current={isActive ? 'page' : undefined}
               >
-                <Icon size={24} />
+                <Icon size={24} aria-hidden="true" />
               </button>
             );
           })}

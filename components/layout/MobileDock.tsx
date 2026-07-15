@@ -12,9 +12,9 @@ const MobileDock = ({ currentPath, onContactClick }: MobileDockProps) => {
   const router = useRouter();
 
   const navItems = [
-    { name: 'Home', path: '/', icon: Home, action: () => router.push('?path=/') },
-    { name: 'Projects', path: '/projects', icon: Briefcase, action: () => router.push('?path=/projects') },
-    { name: 'Prototypes', path: '/prototypes', icon: FlaskConical, action: () => router.push('?path=/prototypes') },
+    { name: 'Home', path: '/', icon: Home, action: () => router.push('/') },
+    { name: 'Projects', path: '/projects', icon: Briefcase, action: () => router.push('/projects') },
+    { name: 'Prototypes', path: '/prototypes', icon: FlaskConical, action: () => router.push('/prototypes') },
     { name: 'Contact', path: '#contact', icon: User, action: onContactClick },
   ];
 

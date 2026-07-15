@@ -5,6 +5,7 @@ import {
     Head,
     Heading,
     Html,
+    Link,
     Preview,
     Section,
     Text,
@@ -13,18 +14,22 @@ import {
 import * as React from "react";
 
 interface ContactFormEmailProps {
+    name: string;
+    fromEmail: string;
     message: string;
     subject: string;
 }
 
 export const ContactFormEmail = ({
+    name,
+    fromEmail,
     message,
     subject,
 }: ContactFormEmailProps) => {
     return (
         <Html>
             <Head />
-            <Preview>New message from your OS Portfolio</Preview>
+            <Preview>{`New message from ${name}: ${subject}`}</Preview>
             <Body style={main}>
                 <Container style={container}>
                     <Heading style={h1}>New Contact Message 📬</Heading>
@@ -33,6 +38,17 @@ export const ContactFormEmail = ({
                     </Text>
 
                     <Section style={section}>
+                        <Text style={label}>From:</Text>
+                        <Text style={subjectText}>
+                            {name} &lt;
+                            <Link href={`mailto:${fromEmail}`} style={link}>
+                                {fromEmail}
+                            </Link>
+                            &gt;
+                        </Text>
+
+                        <Hr style={hr} />
+
                         <Text style={label}>Subject:</Text>
                         <Text style={subjectText}>{subject}</Text>
 
@@ -43,7 +59,7 @@ export const ContactFormEmail = ({
                     </Section>
 
                     <Text style={footer}>
-                        Sent via os-portfolio
+                        Reply directly to this email to respond to {name}.
                     </Text>
                 </Container>
             </Body>
@@ -119,6 +135,11 @@ const messageText = {
 const hr = {
     borderColor: "#e6ebf1",
     margin: "20px 0",
+};
+
+const link = {
+    color: "#2563eb",
+    textDecoration: "underline",
 };
 
 const footer = {

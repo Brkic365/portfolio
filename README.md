@@ -1,6 +1,6 @@
 # 🖥️ OS Portfolio
 
-A personal portfolio website reimagined as a fully functional, browser-based Operating System. Built with **Next.js 14**, **TypeScript**, **Tailwind CSS**, and **Framer Motion**.
+A personal portfolio website reimagined as a fully functional, browser-based Operating System. Built with **Next.js 16**, **TypeScript**, **Tailwind CSS**, and **Framer Motion**.
 
 ![Portfolio Preview](./public/preview.png)
 
@@ -21,7 +21,7 @@ A personal portfolio website reimagined as a fully functional, browser-based Ope
 
 ## 🛠️ Tech Stack
 
-- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **Animations**: [Framer Motion](https://www.framer.com/motion/)

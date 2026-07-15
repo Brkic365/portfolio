@@ -34,7 +34,7 @@ const Wallpaper = () => {
       {/* Watermark */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden select-none z-[-1]">
         <h1 className="text-[10vw] font-bold text-white/[0.03] whitespace-nowrap blur-sm tracking-tighter mix-blend-overlay">
-          PORTFOLIO / 2025
+          PORTFOLIO / {new Date().getFullYear()}
         </h1>
       </div>
 

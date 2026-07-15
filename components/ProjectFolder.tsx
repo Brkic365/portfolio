@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Project } from '@/data/projects';
 
 interface ProjectFolderProps {
@@ -20,6 +21,16 @@ const ProjectFolder = ({ project, onClick }: ProjectFolderProps) => {
     >
       {/* Cover Image - 16:9 Aspect Ratio */}
       <div className="w-full aspect-video bg-gradient-to-br from-slate-800/50 via-slate-900/50 to-blue-950/30 flex items-center justify-center text-7xl border-b border-white/5 relative overflow-hidden">
+        {/* Client / Personal badge */}
+        <span
+          className={`absolute top-3 left-3 z-10 px-2 py-1 rounded-md text-[10px] font-semibold uppercase tracking-wider backdrop-blur-md border ${
+            project.client
+              ? 'bg-emerald-500/20 border-emerald-400/30 text-emerald-200'
+              : 'bg-white/10 border-white/20 text-slate-200'
+          }`}
+        >
+          {project.client ? 'Client' : 'Personal'}
+        </span>
         {project.previewVideo ? (
           <video
             src={project.previewVideo}
@@ -30,10 +41,12 @@ const ProjectFolder = ({ project, onClick }: ProjectFolderProps) => {
             className="w-full h-full object-cover"
           />
         ) : project.coverImage?.startsWith('/') ? (
-          <img
+          <Image
             src={project.coverImage}
-            alt={project.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            alt={`${project.name} project cover`}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
           <span>{project.coverImage || '📦'}</span>

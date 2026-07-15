@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Github, Linkedin, Mail, MapPin, CheckCircle2 } from 'lucide-react';
+import { Send, Github, Linkedin, Mail, MapPin, CheckCircle2, FileText, AlertCircle } from 'lucide-react';
 import Window from '../ui/Window';
 
 interface ContactWindowProps {
@@ -11,13 +10,19 @@ interface ContactWindowProps {
 const ContactWindow = ({ isOpen, onClose }: ContactWindowProps) => {
     const [isSending, setIsSending] = useState(false);
     const [isSent, setIsSent] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [avatarError, setAvatarError] = useState(false);
     const [formData, setFormData] = useState({
+        name: '',
+        fromEmail: '',
         subject: '',
-        message: ''
+        message: '',
+        company: '', // Honeypot — kept empty by real users.
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null);
         setIsSending(true);
 
         try {
@@ -31,14 +36,14 @@ const ContactWindow = ({ isOpen, onClose }: ContactWindowProps) => {
 
             if (response.ok) {
                 setIsSent(true);
-                setFormData({ subject: '', message: '' }); // Reset form
-                setTimeout(() => setIsSent(false), 3000);
+                setFormData({ name: '', fromEmail: '', subject: '', message: '', company: '' });
+                setTimeout(() => setIsSent(false), 4000);
             } else {
-                console.error('Failed to send message');
-                // You might want to show an error state here too
+                const data = await response.json().catch(() => null);
+                setError(data?.error || 'Something went wrong. Please try again or email me directly.');
             }
-        } catch (error) {
-            console.error('Error sending message:', error);
+        } catch {
+            setError('Network error. Please check your connection or email me directly.');
         } finally {
             setIsSending(false);
         }
@@ -67,9 +72,18 @@ const ContactWindow = ({ isOpen, onClose }: ContactWindowProps) => {
                         {/* Avatar */}
                         <div className="relative mb-0 md:mb-6 shrink-0">
                             <div className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-slate-700 ring-2 ring-white/10 overflow-hidden shadow-2xl">
-                                <div className="w-full h-full bg-slate-800 flex items-center justify-center text-2xl md:text-3xl">
-                                    👨‍💻
-                                </div>
+                                {avatarError ? (
+                                    <div className="w-full h-full bg-slate-800 flex items-center justify-center text-2xl md:text-3xl">
+                                        👨‍💻
+                                    </div>
+                                ) : (
+                                    <img
+                                        src="/avatar.jpg"
+                                        alt="Antonio Brkić"
+                                        className="w-full h-full object-cover"
+                                        onError={() => setAvatarError(true)}
+                                    />
+                                )}
                             </div>
                             <div className="absolute bottom-1 right-1 w-3 h-3 md:w-4 md:h-4 bg-green-500 rounded-full border-2 border-black/50 shadow-sm md:block hidden" title="Available for work" />
                         </div>
@@ -101,10 +115,21 @@ const ContactWindow = ({ isOpen, onClose }: ContactWindowProps) => {
                         <a href="https://linkedin.com/in/antonio-brkic" target="_blank" rel="noopener noreferrer" className="p-3 bg-white/5 hover:bg-white/10 rounded-full transition-colors text-slate-300 hover:text-blue-400" title="LinkedIn">
                             <Linkedin size={20} />
                         </a>
-                        <a href="mailto:contact@antoniobrkic.com" className="p-3 bg-white/5 hover:bg-white/10 rounded-full transition-colors text-slate-300 hover:text-green-400" title="Email">
+                        <a href="mailto:contact@antoniobrkic.com" className="p-3 bg-white/5 hover:bg-white/10 rounded-full transition-colors text-slate-300 hover:text-green-400" title="Email" aria-label="Email">
                             <Mail size={20} />
                         </a>
                     </div>
+
+                    {/* Resume Download */}
+                    <a
+                        href="/resume.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 w-full mt-4 md:mt-6 px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-lg text-sm font-medium text-slate-200 transition-colors"
+                    >
+                        <FileText size={16} />
+                        Download Résumé
+                    </a>
                 </div>
 
                 {/* RIGHT COLUMN: Composer */}
@@ -118,30 +143,86 @@ const ContactWindow = ({ isOpen, onClose }: ContactWindowProps) => {
                     </div>
 
                     <form onSubmit={handleSubmit} className="flex-1 flex flex-col gap-6">
+                        {/* Honeypot — hidden from users, catches bots */}
+                        <input
+                            type="text"
+                            name="company"
+                            value={formData.company}
+                            onChange={handleChange}
+                            tabIndex={-1}
+                            autoComplete="off"
+                            aria-hidden="true"
+                            className="hidden"
+                        />
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div className="group">
+                                <label htmlFor="contact-name" className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block" style={{ marginBottom: '0.5rem' }}>Name</label>
+                                <input
+                                    id="contact-name"
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    placeholder="Jane Doe"
+                                    autoComplete="name"
+                                    maxLength={100}
+                                    className="w-full bg-black/20 focus:bg-black/40 rounded-lg px-4 border-b border-white/10 py-3 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition-colors font-medium font-[family-name:var(--font-jetbrains-mono)]"
+                                    required
+                                />
+                            </div>
+                            <div className="group">
+                                <label htmlFor="contact-email" className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block" style={{ marginBottom: '0.5rem' }}>Your Email</label>
+                                <input
+                                    id="contact-email"
+                                    type="email"
+                                    name="fromEmail"
+                                    value={formData.fromEmail}
+                                    onChange={handleChange}
+                                    placeholder="jane@company.com"
+                                    autoComplete="email"
+                                    maxLength={254}
+                                    className="w-full bg-black/20 focus:bg-black/40 rounded-lg px-4 border-b border-white/10 py-3 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition-colors font-medium font-[family-name:var(--font-jetbrains-mono)]"
+                                    required
+                                />
+                            </div>
+                        </div>
+
                         <div className="group">
-                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block" style={{ marginBottom: '0.5rem' }}>Subject</label>
+                            <label htmlFor="contact-subject" className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block" style={{ marginBottom: '0.5rem' }}>Subject</label>
                             <input
+                                id="contact-subject"
                                 type="text"
                                 name="subject"
                                 value={formData.subject}
                                 onChange={handleChange}
                                 placeholder="Project/Work Inquiry..."
+                                maxLength={200}
                                 className="w-full bg-black/20 focus:bg-black/40 rounded-lg px-4 border-b border-white/10 py-3 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition-colors font-medium text-lg font-[family-name:var(--font-jetbrains-mono)]"
                                 required
                             />
                         </div>
 
                         <div className="flex-1 flex flex-col group">
-                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block" style={{ marginBottom: '0.5rem' }}>Message</label>
+                            <label htmlFor="contact-message" className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 block" style={{ marginBottom: '0.5rem' }}>Message</label>
                             <textarea
+                                id="contact-message"
                                 name="message"
                                 value={formData.message}
                                 onChange={handleChange}
                                 placeholder="Hi Antonio, I'd like to talk about..."
+                                maxLength={5000}
                                 className="flex-1 w-full bg-black/20 focus:bg-black/40 rounded-lg p-4 border-none resize-none text-slate-300 placeholder-slate-600 focus:outline-none focus:ring-0 text-base leading-relaxed font-[family-name:var(--font-jetbrains-mono)]"
                                 required
                             />
                         </div>
+
+                        {error && (
+                            <div role="alert" className="flex items-start gap-2 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/30 text-sm text-red-300">
+                                <AlertCircle size={16} className="shrink-0 mt-0.5" />
+                                <span>{error}</span>
+                            </div>
+                        )}
 
                         <div className="flex justify-end pt-4 border-t border-white/10">
                             <button

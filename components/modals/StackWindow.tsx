@@ -1,12 +1,33 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Cpu, Globe, Database, Server, LayoutDashboard, Code, Terminal, Layers, Box, Zap } from 'lucide-react';
+import { Cpu, Database, Server, LayoutDashboard, Code, Terminal, Layers, Box, Zap } from 'lucide-react';
 import Window from '../ui/Window';
 
 interface StackWindowProps {
     isOpen: boolean;
     onClose: () => void;
+}
+
+function Atom({ size = 24, ...props }: { size?: number } & React.SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            {...props}
+            xmlns="http://www.w3.org/2000/svg"
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <circle cx="12" cy="12" r="3" />
+            <path d="M7 12a5 5 0 0 1 5-5 5 5 0 0 1 5 5" />
+            <path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5" />
+            <path d="M12 17a5 5 0 0 1-5-5 5 5 0 0 1 5-5" />
+        </svg>
+    );
 }
 
 const StackWindow = ({ isOpen, onClose }: StackWindowProps) => {
@@ -41,28 +62,6 @@ const StackWindow = ({ isOpen, onClose }: StackWindowProps) => {
             ]
         }
     ];
-
-    function Atom(props: any) {
-        return (
-            <svg
-                {...props}
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            >
-                <circle cx="12" cy="12" r="3" />
-                <path d="M7 12a5 5 0 0 1 5-5 5 5 0 0 1 5 5" />
-                <path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5" />
-                <path d="M12 17a5 5 0 0 1-5-5 5 5 0 0 1 5-5" />
-            </svg>
-        )
-    }
 
     return (
         <Window
