@@ -117,8 +117,8 @@ export default function Home() {
             with live data.
           </p>
           <div className="flex items-center gap-6">
-            <a
-              href="mailto:contact@antoniobrkic.com"
+            <Link
+              href="/contact"
               className="art-mono"
               style={{
                 background: 'var(--accent)',
@@ -127,7 +127,7 @@ export default function Home() {
               }}
             >
               Get in touch
-            </a>
+            </Link>
             <span className="art-mono" style={{ color: 'var(--ink-3)' }}>
               Open to full-time
             </span>
@@ -279,13 +279,13 @@ export default function Home() {
         className="art-pad py-[10vh]"
         style={{ background: 'var(--accent)', color: 'var(--on-accent)' }}
       >
-        <a
-          href="mailto:contact@antoniobrkic.com"
+        <Link
+          href="/contact"
           className="art-display block mb-[6vh]"
           style={{ fontSize: 'clamp(2rem, 8vw, 7rem)' }}
         >
           Say hello
-        </a>
+        </Link>
         <div className="art-mono flex flex-wrap gap-x-8 gap-y-2">
           <a href="https://github.com/Brkic365" target="_blank" rel="noopener noreferrer">
             GitHub

@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import {
   Inter,
   JetBrains_Mono,
-  Source_Serif_4,
   Instrument_Serif,
   Newsreader,
 } from "next/font/google";
@@ -16,12 +15,6 @@ const inter = Inter({
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
-  subsets: ["latin", "latin-ext"],
-});
-
-// Editorial face for the notebook presentation.
-const sourceSerif = Source_Serif_4({
-  variable: "--font-source-serif",
   subsets: ["latin", "latin-ext"],
 });
 
@@ -122,7 +115,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} ${sourceSerif.variable} ${instrumentSerif.variable} ${newsreader.variable} antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} ${newsreader.variable} antialiased`}
       >
         <script
           type="application/ld+json"
