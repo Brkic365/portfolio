@@ -1,16 +1,41 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import {
+  Inter,
+  JetBrains_Mono,
+  Source_Serif_4,
+  Instrument_Serif,
+  Newsreader,
+} from "next/font/google";
 import "./globals.css";
-import Shell from "@/components/layout/Shell";
 
+// latin-ext carries the Croatian diacritics. Without it "Brkić" falls back mid-word.
 const inter = Inter({
   variable: "--font-inter",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
+});
+
+// Editorial face for the notebook presentation.
+const sourceSerif = Source_Serif_4({
+  variable: "--font-source-serif",
+  subsets: ["latin", "latin-ext"],
+});
+
+// Broadsheet: high-contrast display face for mastheads and headlines...
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument",
+  subsets: ["latin", "latin-ext"],
+  weight: "400",
+});
+
+// ...and a text face designed for long-form reading at small sizes.
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
+  subsets: ["latin", "latin-ext"],
 });
 
 const siteUrl = "https://antoniobrkic.com";
@@ -18,14 +43,14 @@ const siteUrl = "https://antoniobrkic.com";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Antonio Brkić — Full-Stack Engineer",
+    default: "Antonio Brkić, Full-Stack Developer",
     template: "%s | Antonio Brkić",
   },
   description:
-    "Antonio Brkić is a full-stack engineer building production SaaS with Next.js, TypeScript, and PostgreSQL. Explore his work through an interactive desktop OS portfolio.",
+    "Antonio Brkić is a full-stack developer in Zagreb building web apps with Next.js, TypeScript and PostgreSQL. Client work, college projects and things built for fun.",
   keywords: [
     "Antonio Brkić",
-    "Full-Stack Engineer",
+    "Full-Stack Developer",
     "Next.js Developer",
     "TypeScript",
     "React",
@@ -40,26 +65,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: siteUrl,
-    siteName: "Antonio Brkić — Full-Stack Engineer",
-    title: "Antonio Brkić — Full-Stack Engineer",
+    siteName: "Antonio Brkić",
+    title: "Antonio Brkić, Full-Stack Developer",
     description:
-      "Full-stack engineer building production SaaS with Next.js, TypeScript, and PostgreSQL. Explore the work through an interactive desktop OS portfolio.",
+      "Full-stack developer in Zagreb building web apps with Next.js, TypeScript and PostgreSQL.",
     locale: "en_US",
-    images: [
-      {
-        url: "/preview.png",
-        width: 2558,
-        height: 1339,
-        alt: "Antonio Brkić — Full-Stack Engineer portfolio",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Antonio Brkić — Full-Stack Engineer",
+    title: "Antonio Brkić, Full-Stack Developer",
     description:
-      "Full-stack engineer building production SaaS with Next.js, TypeScript, and PostgreSQL.",
-    images: ["/preview.png"],
+      "Full-stack developer in Zagreb building web apps with Next.js, TypeScript and PostgreSQL.",
   },
   robots: {
     index: true,
@@ -69,7 +85,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#0a0a0a",
-  colorScheme: "dark",
+  colorScheme: "dark light",
 };
 
 export default function RootLayout({
@@ -82,8 +98,7 @@ export default function RootLayout({
     "@type": "Person",
     name: "Antonio Brkić",
     url: siteUrl,
-    image: `${siteUrl}/preview.png`,
-    jobTitle: "Full-Stack Engineer",
+    jobTitle: "Full-Stack Developer",
     email: "mailto:contact@antoniobrkic.com",
     address: {
       "@type": "PostalAddress",
@@ -107,13 +122,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} ${sourceSerif.variable} ${instrumentSerif.variable} ${newsreader.variable} antialiased`}
       >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
-        <Shell>{children}</Shell>
+        {children}
       </body>
     </html>
   );

@@ -29,8 +29,8 @@ body {
   min-height: 100vh;
 }
 
-/* Dot grid pattern overlay */
-body::before {
+/* Dot grid pattern overlay — scoped to the OS shell so other presentations opt out */
+.os-root::before {
   content: '';
   position: fixed;
   top: 0;
@@ -137,6 +137,421 @@ body::before {
 /* Safe area for mobile */
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ---------------------------------------------------------------------------
+   Notebook presentation (/v2)
+   Editorial counterpart to the OS shell: paper surface, serif display face,
+   long measure, no glass. Light by default, dark by preference.
+   --------------------------------------------------------------------------- */
+
+.notebook {
+  --paper: #fbfaf8;
+  --ink: #171614;
+  --ink-secondary: #55534d;
+  /* Tuned for >=4.5:1 against --paper; these carry real text, not decoration. */
+  --ink-muted: #6f6c64;
+  --rule: #e4e1d9;
+  --rule-strong: #cfcbc0;
+  --accent: #0f5f57;
+  --accent-soft: #e6f1ef;
+
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-color-scheme: dark) {
+  .notebook {
+    --paper: #121110;
+    --ink: #ecebe5;
+    --ink-secondary: #a9a59c;
+    --ink-muted: #8a8578;
+    --rule: #2a2825;
+    --rule-strong: #3d3a35;
+    --accent: #5ecfbe;
+    --accent-soft: #16302c;
+  }
+}
+
+.notebook ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notebook ::-webkit-scrollbar-thumb {
+  background: var(--rule-strong);
+}
+
+.notebook-display {
+  font-family: var(--font-source-serif), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+.notebook-mono {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.78em;
+  letter-spacing: 0.02em;
+}
+
+/* Long-form body copy: generous measure, serif, comfortable rhythm. */
+.notebook-prose {
+  font-family: var(--font-source-serif), Georgia, serif;
+  font-size: 1.16rem;
+  line-height: 1.72;
+  color: var(--ink-secondary);
+}
+
+.notebook-prose p+p {
+  margin-top: 1.15rem;
+}
+
+.notebook-prose strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.notebook-prose code {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.82em;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 0.1em 0.36em;
+  border-radius: 3px;
+}
+
+.notebook-link {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.15s ease, color 0.15s ease;
+}
+
+.notebook-link:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+/* Placeholder for a number only Antonio can supply — deliberately conspicuous. */
+.notebook-todo {
+  background: repeating-linear-gradient(-45deg,
+      var(--accent-soft),
+      var(--accent-soft) 6px,
+      transparent 6px,
+      transparent 12px);
+  border-bottom: 1px dashed var(--accent);
+  color: var(--accent);
+  padding: 0 0.3em;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.8em;
+}
+/* ---------------------------------------------------------------------------
+   Art-directed presentation (/v3)
+
+   The landing page is deliberately quiet and follows the system theme.
+   Each project page overrides the same variables inline and commits to its
+   own palette — that commitment is the art direction, so it does not follow
+   prefers-color-scheme.
+   --------------------------------------------------------------------------- */
+
+.art {
+  --bg: #f4f2ee;
+  --ink: #14130f;
+  --ink-2: #5c584f;
+  /* Tuned to clear 4.5:1 against --bg. This carries real label text. */
+  --ink-3: #6f6a5e;
+  --rule: #d8d3c8;
+  --accent: #14130f;
+  --on-accent: #f4f2ee;
+
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+@media (prefers-color-scheme: dark) {
+  .art:not([data-theme]) {
+    --bg: #100f0d;
+    --ink: #f2efe7;
+    --ink-2: #aaa598;
+    --ink-3: #8d887b;
+    --rule: #2e2b25;
+    --accent: #f2efe7;
+    --on-accent: #100f0d;
+  }
+}
+
+.art ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.art ::-webkit-scrollbar-thumb {
+  background: var(--rule);
+}
+
+/* Horizontal rhythm. Sections are full-bleed; only text is inset. */
+.art-pad {
+  padding-inline: clamp(1.25rem, 5vw, 5.5rem);
+}
+
+.art-display {
+  font-family: var(--font-instrument), Georgia, serif;
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+}
+
+.art-serif {
+  font-family: var(--font-newsreader), Georgia, serif;
+}
+
+.art-mono {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Oversized index numeral used as a graphic element, not as information. */
+.art-numeral {
+  font-family: var(--font-instrument), Georgia, serif;
+  line-height: 0.75;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--rule);
+  user-select: none;
+}
+
+/* Unifies screenshots from wildly different palettes into one look.
+   Tinted by the current theme's accent, so each project page differs. */
+.art-tint {
+  position: relative;
+  overflow: hidden;
+}
+
+.art-tint>img {
+  filter: grayscale(1) contrast(1.05);
+}
+
+.art-tint.art-lift>img {
+  filter: grayscale(1) url(#art-lift) contrast(1.02);
+}
+
+.art-tint::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  mix-blend-mode: color;
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+.art-link {
+  color: inherit;
+  text-decoration: none;
+  box-shadow: inset 0 -1px 0 currentColor;
+  transition: opacity 0.15s ease;
+}
+
+.art-link:hover {
+  opacity: 0.6;
+}
+
+/* ---------------------------------------------------------------------------
+   Project bands
+
+   Each project is a full-bleed image the page scrolls through. The image is
+   masked so it dissolves into the background at the top rather than starting
+   on a hard edge, and a bottom scrim fades to solid --bg so the caption always
+   sits on an opaque surface regardless of what the photograph is doing.
+   --------------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------------
+   Screenshots
+
+   Never full-bleed and never behind page text. A UI screenshot carries its own
+   headlines; stacking the site's typography on top of it puts two type systems
+   in the same space and both lose. Framing the shot instead reads it as a
+   quoted object, and halving its display width means the ~2330px source is
+   downscaled rather than upscaled — which is what "low resolution" actually was.
+   --------------------------------------------------------------------------- */
+
+.art-band {
+  width: 100%;
+}
+
+.art-shot {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--ink) 4%, var(--bg));
+  box-shadow: 0 34px 70px -34px rgba(0, 0, 0, 0.5);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.art-band:hover .art-shot,
+.art a:focus-visible .art-shot {
+  transform: translateY(-6px);
+}
+
+/* Minimal window chrome — signals "this is a product", and gives the
+   screenshot's own text an obvious container to belong to. */
+.art-shot-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.art-shot-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--rule);
+  flex: none;
+}
+
+.art-shot-url {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  color: var(--ink-3);
+  margin-left: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.art-shot-media {
+  position: relative;
+  width: 100%;
+}
+
+.art-shot-media img {
+  object-fit: cover;
+  object-position: top center;
+  filter: saturate(0.88);
+}
+
+/* Very dark screenshots get a gentle shadow lift. Kept mild on purpose: a
+   steeper curve amplifies the compression noise sitting in the near-black
+   areas, which is what made these look grainy and over-coloured. Desaturating
+   before the lift stops the gamma from pushing colour casts around. */
+.art-shot.art-lift .art-shot-media img {
+  filter: saturate(0.7) url(#art-lift);
+}
+
+/* Whole rows are links, so keyboard users need a target they can actually see. */
+.art a:focus-visible,
+.art a:focus-visible .art-row {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.art a:focus-visible {
+  border-radius: 2px;
+}
+
+.art-todo {
+  background: repeating-linear-gradient(-45deg,
+      color-mix(in srgb, var(--accent) 14%, transparent),
+      color-mix(in srgb, var(--accent) 14%, transparent) 6px,
+      transparent 6px,
+      transparent 12px);
+  border-bottom: 1px dashed var(--accent);
+  color: var(--accent);
+  padding: 0 0.25em;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.8em;
+}
+
+/* ---------------------------------------------------------------------------
+   Motion layer (/v3)
+
+   Scroll-driven, so it costs no client JavaScript and cannot desynchronise
+   from the scroll position. Everything is gated twice: behind @supports, so
+   browsers without scroll timelines simply render the final state, and behind
+   prefers-reduced-motion. Note the global reduced-motion rule below does NOT
+   cover these — timeline-driven animations ignore animation-duration — which
+   is why the media query is repeated here.
+   --------------------------------------------------------------------------- */
+
+@keyframes art-rise {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes art-drift {
+  from {
+    transform: scale(1.14) translateY(-2.2%);
+  }
+
+  to {
+    transform: scale(1.14) translateY(2.2%);
+  }
+}
+
+/* Hero content enters on load, lightly staggered. */
+@media (prefers-reduced-motion: no-preference) {
+  .art-enter {
+    animation: art-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .art-enter-2 {
+    animation-delay: 0.08s;
+  }
+
+  .art-enter-3 {
+    animation-delay: 0.16s;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+
+    .art main>section:not([data-no-reveal]),
+    .art main>nav,
+    .art main>footer,
+    .art-row {
+      animation: art-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+
+    /* Bands are near-viewport-height, so an `entry` range would leave them
+       mid-fade for most of their scroll. They get a shorter, earlier range. */
+    .art-band {
+      animation: art-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 30%;
+    }
+
+    /* Full-bleed plates drift against the scroll. Excluded from row media,
+       which owns its transform for the hover state. */
+    .art-tint[data-parallax]>img {
+      animation: art-drift linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+  }
 }
 
 /* Respect users who prefer reduced motion (accessibility / WCAG 2.3.3) */

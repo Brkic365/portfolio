@@ -2,6 +2,14 @@ import type { MetadataRoute } from "next";
 
 const siteUrl = "https://antoniobrkic.com";
 
+const projects = [
+  "stolarija-bm",
+  "stocks-royale",
+  "pentix",
+  "route-master",
+  "runtime",
+];
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   return [
@@ -11,17 +19,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 1,
     },
-    {
-      url: `${siteUrl}/projects`,
+    ...projects.map((slug) => ({
+      url: `${siteUrl}/work/${slug}`,
       lastModified: now,
-      changeFrequency: "monthly",
+      changeFrequency: "monthly" as const,
       priority: 0.8,
-    },
-    {
-      url: `${siteUrl}/prototypes`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
+    })),
   ];
 }

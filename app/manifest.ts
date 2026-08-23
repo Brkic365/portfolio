@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Antonio Brkić — Full-Stack Engineer",
+    name: "Antonio Brkić, Full-Stack Developer",
     short_name: "Antonio Brkić",
     description:
       "Full-stack engineer building production SaaS with Next.js, TypeScript, and PostgreSQL.",
