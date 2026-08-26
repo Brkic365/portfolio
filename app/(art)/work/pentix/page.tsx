@@ -106,6 +106,7 @@ export default function PentixPage() {
             src="/projects/pentix.png"
             alt="The Pentix leaderboard and match interface"
             url="pentix.eu"
+            lift
             ratio="16 / 10"
             sizes="(max-width: 1024px) 92vw, 82vw"
           />

@@ -28,7 +28,7 @@ const work = [
   {
     slug: 'pentix',
     url: 'pentix.eu',
-    lift: false,
+    lift: true,
     name: 'Pentix',
     line: 'Counts push-up reps through your phone camera',
     tag: 'Personal',

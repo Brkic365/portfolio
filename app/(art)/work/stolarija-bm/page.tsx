@@ -131,7 +131,6 @@ export default function StolarijaPage() {
               src="/projects/stolarija-bm-admin.png"
               alt="The Stolarija-BM admin dashboard"
               url="stolarijabm.vercel.app/admin"
-              lift
               ratio="16 / 9"
               sizes="(max-width: 1024px) 92vw, 82vw"
             />
