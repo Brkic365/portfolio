@@ -98,7 +98,9 @@ export default function Home() {
   const hasResume = publicFileExists('resume.pdf');
   // First of these that exists gets used, so the photo can move without a
   // code change.
-  const portrait = ['images/ja.jpg', 'avatar.jpg', 'avatar.png'].find(publicFileExists);
+  const portrait = ['images/antonio-brkic.jpg', 'avatar.jpg', 'avatar.png'].find(
+    publicFileExists,
+  );
   const shots = Object.fromEntries(
     work.map((p) => [p.slug, publicFileExists(p.image)]),
   );
