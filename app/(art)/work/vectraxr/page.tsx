@@ -30,6 +30,7 @@ const verticals: [string, string, string, string][] = [
 
 export default function VectraXRPage() {
   const hasShot = publicFileExists('projects/vectraxr.png');
+  const hasConfigurator = publicFileExists('projects/vectraxr-configurator.png');
 
   return (
     <div className="art" data-theme="vectraxr" style={themeVars(theme)}>
@@ -156,6 +157,21 @@ export default function VectraXRPage() {
             </div>
           ))}
         </section>
+
+        {hasConfigurator && (
+          <section className="art-pad pb-[10vh]">
+            <Shot
+              src="/projects/vectraxr-configurator.png"
+              alt="The Vectra XR product configurator"
+              url="demo.vectraxr.com"
+              ratio="16 / 9"
+              sizes="(max-width: 1024px) 92vw, 82vw"
+            />
+            <figcaption className="art-mono mt-4" style={{ color: 'var(--ink-3)' }}>
+              The configurator, running in the browser
+            </figcaption>
+          </section>
+        )}
 
         {/* ── Facts ─────────────────────────────────────────────────── */}
         <section
