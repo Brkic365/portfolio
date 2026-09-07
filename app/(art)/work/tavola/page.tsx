@@ -30,7 +30,7 @@ export default function TavolaPage() {
       <main>
         <section className="art-pad pt-[18vh] pb-[8vh]">
           <div className="art-mono mb-6" style={{ color: 'var(--accent)' }}>
-            Prototype
+            Personal project, live at tavola-menu.vercel.app
           </div>
           <h1
             className="art-display art-enter art-enter-2"
@@ -38,18 +38,35 @@ export default function TavolaPage() {
           >
             Tavola
           </h1>
-          <p
-            className="art-serif mt-10"
-            style={{
-              fontSize: 'clamp(1.15rem, 2.4vw, 1.9rem)',
-              lineHeight: 1.3,
-              color: 'var(--ink-2)',
-              maxWidth: '30ch',
-            }}
+          <div
+            className="mt-10 flex flex-wrap items-end justify-between gap-8"
           >
-            A menu that shows you how big the dish actually is, before you order
-            it.
-          </p>
+            <p
+              className="art-serif"
+              style={{
+                fontSize: 'clamp(1.15rem, 2.4vw, 1.9rem)',
+                lineHeight: 1.3,
+                color: 'var(--ink-2)',
+                maxWidth: '30ch',
+              }}
+            >
+              A menu that shows you how big the dish actually is, before you
+              order it.
+            </p>
+            <a
+              href="https://tavola-menu.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="art-mono"
+              style={{
+                background: 'var(--accent)',
+                color: 'var(--on-accent)',
+                padding: '0.9em 1.4em',
+              }}
+            >
+              Open it
+            </a>
+          </div>
         </section>
 
         {hasShot && (
@@ -144,8 +161,9 @@ export default function TavolaPage() {
                 lineHeight: 1.7,
               }}
             >
-              Status: prototype. It runs on seeded demo data, and the dish models
-              are stand-ins rather than real scanned food. Not deployed yet.
+              Heads up: it runs on demo data. The dishes are examples and the
+              models are stand-ins rather than real scanned food, so treat the
+              portions as a demonstration of the idea.
             </p>
           </div>
 
@@ -155,6 +173,7 @@ export default function TavolaPage() {
               ['Data', 'Prisma, PostgreSQL'],
               ['3D and AR', 'model-viewer, Scene Viewer, Quick Look'],
               ['Role', 'Sole developer'],
+              ['Live at', 'tavola-menu.vercel.app', 'https://tavola-menu.vercel.app/'],
               ['Source', 'github.com/Brkic365/tavola', 'https://github.com/Brkic365/tavola'],
             ].map(([k, v, href]) => (
               <div key={k}>

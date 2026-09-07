@@ -8,6 +8,7 @@ const projects = [
   "tavola",
   "stocks-royale",
   "pentix",
+  "shelf",
   "route-master",
   "runtime",
 ];

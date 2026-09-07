@@ -34,6 +34,17 @@ export const projectThemes: Record<string, ProjectTheme> = {
         accent: '#1e3a5f',
         onAccent: '#fafaf7',
     },
+    /** Bone paper and bottle green. Light on purpose, so it does not read as
+        a second version of Tavola's dark room. */
+    shelf: {
+        bg: '#f7f4ed',
+        ink: '#14100c',
+        ink2: '#4a4239',
+        ink3: '#6b6154',
+        rule: '#ded6c8',
+        accent: '#1f5138',
+        onAccent: '#f7f4ed',
+    },
     /** Espresso and warm amber. Restaurant light, and dark enough to break
         up the run of pale pages either side of it. */
     tavola: {

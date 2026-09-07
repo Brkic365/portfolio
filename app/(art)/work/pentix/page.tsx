@@ -167,11 +167,11 @@ export default function PentixPage() {
             Back to index
           </Link>
           <Link
-            href="/work/stocks-royale"
+            href="/work/shelf"
             className="art-display"
             style={{ fontSize: 'clamp(1.8rem, 5vw, 4rem)', color: 'var(--ink)' }}
           >
-            Stocks Royale
+            Shelf
           </Link>
         </nav>
       </main>
