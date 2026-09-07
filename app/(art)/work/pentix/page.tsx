@@ -138,15 +138,21 @@ export default function PentixPage() {
             {[
               ['Built with', 'Next.js, MediaPipe, Supabase'],
               ['Role', 'Sole developer'],
-              ['Status', 'Live and in use'],
+              ['Live at', 'pentix.eu', 'https://pentix.eu/'],
               ['Runs on', 'Your device, not a server'],
-            ].map(([k, v]) => (
+            ].map(([k, v, href]) => (
               <div key={k}>
                 <dt className="art-mono mb-2" style={{ color: 'var(--ink-3)' }}>
                   {k}
                 </dt>
                 <dd className="art-serif" style={{ fontSize: '1.05rem', color: 'var(--ink)' }}>
-                  {v}
+                  {href ? (
+                    <a href={href} target="_blank" rel="noopener noreferrer" className="art-link">
+                      {v}
+                    </a>
+                  ) : (
+                    v
+                  )}
                 </dd>
               </div>
             ))}

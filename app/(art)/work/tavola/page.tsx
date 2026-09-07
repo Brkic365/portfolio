@@ -155,13 +155,20 @@ export default function TavolaPage() {
               ['Data', 'Prisma, PostgreSQL'],
               ['3D and AR', 'model-viewer, Scene Viewer, Quick Look'],
               ['Role', 'Sole developer'],
-            ].map(([k, v]) => (
+              ['Source', 'github.com/Brkic365/tavola', 'https://github.com/Brkic365/tavola'],
+            ].map(([k, v, href]) => (
               <div key={k}>
                 <dt className="art-mono mb-1" style={{ color: 'var(--ink-3)' }}>
                   {k}
                 </dt>
                 <dd className="art-serif" style={{ color: 'var(--ink)' }}>
-                  {v}
+                  {href ? (
+                    <a href={href} target="_blank" rel="noopener noreferrer" className="art-link">
+                      {v}
+                    </a>
+                  ) : (
+                    v
+                  )}
                 </dd>
               </div>
             ))}

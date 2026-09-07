@@ -268,9 +268,9 @@ export default function Home() {
           <dl className="grid grid-cols-2 lg:grid-cols-1 gap-6">
             {[
               ['Based in', 'Zagreb, Croatia'],
-              ['Studying', 'Computer science at TVZ'],
+              ['Studying', 'Computer science at TVZ, graduating June 2027'],
               ['Working with', 'TypeScript, Next.js, Node, PostgreSQL, Python'],
-              ['Right now', 'Open to full-time roles'],
+              ['Availability', 'Open to full-time roles, can start immediately'],
             ].map(([k, v]) => (
               <div key={k}>
                 <dt className="art-mono mb-1" style={{ color: 'var(--ink-3)' }}>

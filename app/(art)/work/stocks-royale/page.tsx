@@ -152,14 +152,20 @@ export default function StocksRoyalePage() {
               ['Frontend', 'Next.js, Lightweight Charts'],
               ['Backend', 'Node, Express, PostgreSQL'],
               ['Transport', 'Socket.io'],
-              ['Source', 'github.com/Brkic365/Stocks-Royale'],
-            ].map(([k, v]) => (
+              ['Source', 'github.com/Brkic365/Stocks-Royale', 'https://github.com/Brkic365/Stocks-Royale'],
+            ].map(([k, v, href]) => (
               <div key={k}>
                 <dt className="art-mono mb-1" style={{ color: 'var(--ink-3)' }}>
                   {k}
                 </dt>
                 <dd className="art-serif" style={{ color: 'var(--ink)' }}>
-                  {v}
+                  {href ? (
+                    <a href={href} target="_blank" rel="noopener noreferrer" className="art-link">
+                      {v}
+                    </a>
+                  ) : (
+                    v
+                  )}
                 </dd>
               </div>
             ))}
