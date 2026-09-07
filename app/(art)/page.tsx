@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import Shot from '@/components/art/Shot';
 import { publicFileExists } from '@/lib/publicAssets';
 
@@ -95,6 +96,9 @@ const archive: [string, string][] = [
 
 export default function Home() {
   const hasResume = publicFileExists('resume.pdf');
+  // First of these that exists gets used, so the photo can move without a
+  // code change.
+  const portrait = ['images/ja.jpg', 'avatar.jpg', 'avatar.png'].find(publicFileExists);
   const shots = Object.fromEntries(
     work.map((p) => [p.slug, publicFileExists(p.image)]),
   );
@@ -243,6 +247,16 @@ export default function Home() {
         style={{ borderTop: '1px solid var(--rule)' }}
       >
         <div>
+          {portrait && (
+            <div className="art-portrait mb-10">
+              <Image
+                src={`/${portrait}`}
+                alt="Antonio Brkić"
+                fill
+                sizes="(max-width: 1024px) 60vw, 17rem"
+              />
+            </div>
+          )}
           <h2
             className="art-display mb-8"
             style={{ fontSize: 'clamp(2.4rem, 6vw, 5rem)', color: 'var(--ink)' }}

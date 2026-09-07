@@ -199,6 +199,30 @@ body {
   filter: saturate(0.7) url(#art-lift);
 }
 
+/* Portrait. Framed like the screenshots so it reads as part of the same
+   family, and desaturated by about the same amount so a photograph does not
+   shout next to the muted captures. For a colder, more editorial look, take
+   saturate() to 0. */
+.art-portrait {
+  position: relative;
+  width: 100%;
+  max-width: 17rem;
+  aspect-ratio: 4 / 5;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ink) 4%, var(--bg));
+  box-shadow: 0 24px 50px -30px rgba(0, 0, 0, 0.45);
+}
+
+.art-portrait img {
+  object-fit: cover;
+  /* Source is square; a 4:5 frame crops the sides, so only the horizontal
+     matters. Centre keeps the face where it is. */
+  object-position: center;
+  filter: saturate(0.85) contrast(1.02);
+}
+
 /* ---------------------------------------------------------------------------
    Motion
 
