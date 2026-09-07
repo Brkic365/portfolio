@@ -199,6 +199,67 @@ body {
   filter: saturate(0.7) url(#art-lift);
 }
 
+/* ---------------------------------------------------------------------------
+   More work
+
+   A horizontal strip rather than a second full list, so the smaller projects
+   look like they belong without competing with the seven above. Native
+   overflow with scroll snapping, which means no client JavaScript, and it
+   stays scrollable by touch, trackpad, and keyboard once a card is focused.
+   The strip carries its own inline padding instead of sitting inside .art-pad,
+   so cards can run to the edge of the viewport.
+   --------------------------------------------------------------------------- */
+
+.art-strip {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(14rem, 18rem);
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: clamp(1.25rem, 5vw, 5.5rem);
+  padding-inline: clamp(1.25rem, 5vw, 5.5rem);
+  padding-bottom: 1.25rem;
+  overscroll-behavior-x: contain;
+}
+
+.art-mini {
+  scroll-snap-align: start;
+}
+
+.art-mini-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ink) 4%, var(--bg));
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.art-mini:hover .art-mini-media,
+.art-strip a:focus-visible .art-mini-media {
+  transform: translateY(-4px);
+}
+
+.art-mini-media img {
+  object-fit: cover;
+  object-position: top center;
+  filter: saturate(0.88);
+}
+
+.art-mini-media.art-lift img {
+  filter: saturate(0.7) url(#art-lift);
+}
+
+/* No capture for this one, so the card carries the name as type instead. */
+.art-mini-blank {
+  display: flex;
+  align-items: flex-end;
+  padding: 1rem;
+}
+
 /* Portrait. Framed like the screenshots so it reads as part of the same
    family, and desaturated by about the same amount so a photograph does not
    shout next to the muted captures. For a colder, more editorial look, take

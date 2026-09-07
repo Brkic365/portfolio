@@ -83,24 +83,76 @@ const work = [
   },
 ];
 
-interface ArchiveItem {
+interface MoreItem {
   name: string;
+  note: string;
   href: string;
   /** True when the link goes to a project page here rather than off-site. */
   internal?: boolean;
+  image?: string;
+  /** Set from measured mean luminance, not by eye. */
+  lift?: boolean;
 }
 
-const archive: ArchiveItem[] = [
+const more: MoreItem[] = [
   // Kept its full page; it just no longer earns a slot in the main list.
-  { name: 'Stocks Royale', href: '/work/stocks-royale', internal: true },
-  { name: 'AI MotionMetrics', href: 'https://ai-motion-metrics.vercel.app/' },
-  { name: 'EBankc', href: 'https://ebankc.vercel.app/' },
-  { name: 'RocketWizard', href: 'https://rocket-wizard.vercel.app/' },
-  { name: 'Digital Era', href: 'https://www.the-digital-era.com/' },
-  { name: 'by Marro', href: 'https://bymarro.vercel.app/' },
-  { name: 'SiteBoost', href: 'https://site-boost.vercel.app/' },
-  { name: 'LuxuryPerspective', href: 'https://luxury-perspective.vercel.app/' },
-  { name: 'DreamFinders', href: 'https://dream-finders.vercel.app/' },
+  {
+    name: 'Stocks Royale',
+    note: 'A trading game on simulated market data',
+    href: '/work/stocks-royale',
+    internal: true,
+    image: '/projects/stocks-royale.png',
+    lift: true,
+  },
+  {
+    name: 'AI MotionMetrics',
+    note: 'Rep tracking in the browser with TensorFlow.js',
+    href: 'https://ai-motion-metrics.vercel.app/',
+  },
+  {
+    name: 'EBankc',
+    note: 'A decentralised finance banking concept',
+    href: 'https://ebankc.vercel.app/',
+    image: '/projects/ebankc.png',
+  },
+  {
+    name: 'RocketWizard',
+    note: 'Copy-trading SaaS with crypto billing',
+    href: 'https://rocket-wizard.vercel.app/',
+    image: '/projects/rocketwizard.png',
+  },
+  {
+    name: 'Digital Era',
+    note: 'Marketing site for a consultancy',
+    href: 'https://www.the-digital-era.com/',
+    image: '/projects/digital-era.png',
+  },
+  {
+    name: 'by Marro',
+    note: 'Portfolio for a freelance photographer',
+    href: 'https://bymarro.vercel.app/',
+    image: '/projects/marro.png',
+    lift: true,
+  },
+  {
+    name: 'SiteBoost',
+    note: 'Landing page for website audits',
+    href: 'https://site-boost.vercel.app/',
+    image: '/projects/siteboost.png',
+  },
+  {
+    name: 'LuxuryPerspective',
+    note: 'A premium real estate UI study',
+    href: 'https://luxury-perspective.vercel.app/',
+    image: '/projects/luxury-perspective.png',
+    lift: true,
+  },
+  {
+    name: 'DreamFinders',
+    note: 'Search-driven property browsing',
+    href: 'https://dream-finders.vercel.app/',
+    image: '/projects/dreamfinders.png',
+  },
 ];
 
 export default function Home() {
@@ -324,20 +376,63 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Archive ──────────────────────────────────────────────── */}
-      <section className="art-pad py-[8vh]" style={{ borderTop: '1px solid var(--rule)' }}>
-        <div className="art-mono mb-6" style={{ color: 'var(--ink-3)' }}>
-          Older work
+      {/* ── More work ────────────────────────────────────────────────
+          A strip rather than a second list. The section header is inset,
+          the strip itself runs full width so cards reach the edge.      */}
+      <section data-no-reveal style={{ borderTop: '1px solid var(--rule)' }}>
+        <div className="art-pad pt-[8vh] pb-6 flex flex-wrap items-baseline justify-between gap-3">
+          <h2
+            className="art-display"
+            style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', color: 'var(--ink)' }}
+          >
+            More work
+          </h2>
+          <span className="art-mono" style={{ color: 'var(--ink-3)' }}>
+            Scroll sideways
+          </span>
         </div>
-        <div className="flex flex-wrap gap-x-8 gap-y-3">
-          {archive.map((item) => {
-            const style = {
-              fontSize: 'clamp(1.1rem, 2vw, 1.6rem)',
-              color: 'var(--ink-2)',
-            } as const;
+
+        <div className="art-strip pb-[8vh]" aria-label="More projects">
+          {more.map((item) => {
+            const card = (
+              <div className="art-mini">
+                {item.image ? (
+                  <div className={`art-mini-media ${item.lift ? 'art-lift' : ''}`}>
+                    <Image
+                      src={item.image}
+                      alt={`${item.name} interface`}
+                      fill
+                      sizes="18rem"
+                    />
+                  </div>
+                ) : (
+                  <div className="art-mini-media art-mini-blank">
+                    <span
+                      className="art-display"
+                      style={{ fontSize: '1.4rem', color: 'var(--ink-3)' }}
+                    >
+                      {item.name}
+                    </span>
+                  </div>
+                )}
+                <h3
+                  className="art-display mt-4 mb-1"
+                  style={{ fontSize: '1.35rem', color: 'var(--ink)' }}
+                >
+                  {item.name}
+                </h3>
+                <p
+                  className="art-serif"
+                  style={{ fontSize: '0.95rem', lineHeight: 1.45, color: 'var(--ink-2)' }}
+                >
+                  {item.note}
+                </p>
+              </div>
+            );
+
             return item.internal ? (
-              <Link key={item.name} href={item.href} className="art-serif art-link" style={style}>
-                {item.name}
+              <Link key={item.name} href={item.href} className="block">
+                {card}
               </Link>
             ) : (
               <a
@@ -345,10 +440,9 @@ export default function Home() {
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="art-serif art-link"
-                style={style}
+                className="block"
               >
-                {item.name}
+                {card}
               </a>
             );
           })}
