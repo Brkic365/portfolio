@@ -3,6 +3,7 @@ import type { MetadataRoute } from "next";
 const siteUrl = "https://antoniobrkic.com";
 
 const projects = [
+  "vectraxr",
   "stolarija-bm",
   "stocks-royale",
   "pentix",

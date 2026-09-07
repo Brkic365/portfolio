@@ -155,11 +155,11 @@ export default function RuntimePage() {
             Back to index
           </Link>
           <Link
-            href="/work/stolarija-bm"
+            href="/work/vectraxr"
             className="art-display"
             style={{ fontSize: 'clamp(1.8rem, 5vw, 4rem)', color: 'var(--ink)' }}
           >
-            Stolarija-BM
+            Vectra XR
           </Link>
         </nav>
       </main>

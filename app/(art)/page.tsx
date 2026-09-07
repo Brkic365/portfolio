@@ -4,6 +4,17 @@ import { publicFileExists } from '@/lib/publicAssets';
 
 const work = [
   {
+    slug: 'vectraxr',
+    url: 'vectraxr.com',
+    lift: false,
+    name: 'Vectra XR',
+    line: '3D configurators for things that are built to order',
+    tag: 'Co-founder',
+    stack: 'Next.js, WebGL, WebAR',
+    image: '/projects/vectraxr.png',
+    href: '/work/vectraxr',
+  },
+  {
     slug: 'stolarija-bm',
     url: 'stolarijabm.vercel.app',
     lift: true,
@@ -73,6 +84,9 @@ const archive: [string, string][] = [
 
 export default function Home() {
   const hasResume = publicFileExists('resume.pdf');
+  const shots = Object.fromEntries(
+    work.map((p) => [p.slug, publicFileExists(p.image)]),
+  );
 
   return (
     <main>
@@ -181,7 +195,28 @@ export default function Home() {
                 </div>
 
                 <div className={flip ? 'lg:order-1' : ''}>
-                  <Shot src={p.image} alt={`${p.name} interface`} url={p.url} lift={p.lift} />
+                  {shots[p.slug] ? (
+                    <Shot src={p.image} alt={`${p.name} interface`} url={p.url} lift={p.lift} />
+                  ) : (
+                    /* No capture yet. A typographic panel keeps the two-column
+                       rhythm instead of leaving a hole. */
+                    <div
+                      className="flex items-end"
+                      style={{
+                        border: '1px solid var(--rule)',
+                        borderRadius: 10,
+                        aspectRatio: '16 / 10',
+                        padding: 'clamp(1.5rem, 3vw, 2.5rem)',
+                      }}
+                    >
+                      <span
+                        className="art-display"
+                        style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', color: 'var(--ink-3)' }}
+                      >
+                        {p.url}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </Link>

@@ -24,6 +24,16 @@ export interface ProjectTheme {
 }
 
 export const projectThemes: Record<string, ProjectTheme> = {
+    /** Vectra XR's own palette: warm off-white paper with a deep navy. */
+    vectraxr: {
+        bg: '#faf9f6',
+        ink: '#0f0f0f',
+        ink2: '#404040',
+        ink3: '#6a6a6a',
+        rule: '#e5e4df',
+        accent: '#1e3a5f',
+        onAccent: '#fafaf7',
+    },
     /** Warm oak and cream — the workshop's own materials. */
     'stolarija-bm': {
         bg: '#f2ece1',
