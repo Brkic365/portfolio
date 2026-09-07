@@ -34,6 +34,17 @@ export const projectThemes: Record<string, ProjectTheme> = {
         accent: '#1e3a5f',
         onAccent: '#fafaf7',
     },
+    /** Espresso and warm amber. Restaurant light, and dark enough to break
+        up the run of pale pages either side of it. */
+    tavola: {
+        bg: '#16110d',
+        ink: '#f4ece2',
+        ink2: '#b3a596',
+        ink3: '#97897a',
+        rule: '#33271e',
+        accent: '#e08b3c',
+        onAccent: '#1a120a',
+    },
     /** Warm oak and cream — the workshop's own materials. */
     'stolarija-bm': {
         bg: '#f2ece1',

@@ -148,11 +148,11 @@ export default function StolarijaPage() {
             Back to index
           </Link>
           <Link
-            href="/work/stocks-royale"
+            href="/work/tavola"
             className="art-display"
             style={{ fontSize: 'clamp(1.8rem, 5vw, 4rem)', color: 'var(--ink)' }}
           >
-            Stocks Royale
+            Tavola
           </Link>
         </nav>
       </main>

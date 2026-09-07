@@ -5,6 +5,7 @@ const siteUrl = "https://antoniobrkic.com";
 const projects = [
   "vectraxr",
   "stolarija-bm",
+  "tavola",
   "stocks-royale",
   "pentix",
   "route-master",

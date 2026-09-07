@@ -174,11 +174,11 @@ export default function StocksRoyalePage() {
             Back to index
           </Link>
           <Link
-            href="/work/pentix"
+            href="/work/route-master"
             className="art-display"
             style={{ fontSize: 'clamp(1.8rem, 5vw, 4rem)', color: 'var(--ink)' }}
           >
-            Pentix
+            RouteMaster
           </Link>
         </nav>
       </main>

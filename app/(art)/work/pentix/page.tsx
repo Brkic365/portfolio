@@ -161,11 +161,11 @@ export default function PentixPage() {
             Back to index
           </Link>
           <Link
-            href="/work/route-master"
+            href="/work/stocks-royale"
             className="art-display"
             style={{ fontSize: 'clamp(1.8rem, 5vw, 4rem)', color: 'var(--ink)' }}
           >
-            RouteMaster
+            Stocks Royale
           </Link>
         </nav>
       </main>

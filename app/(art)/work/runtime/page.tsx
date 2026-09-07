@@ -6,13 +6,13 @@ import { projectThemes, themeVars } from '@/data/projectThemes';
 export const metadata: Metadata = {
   title: 'Runtime',
   description:
-    'An API monitoring dashboard built in 24 hours at a hackathon, showing latency, throughput and errors from live request traffic.',
+    'An API monitoring platform built end to end in 24 hours at the Treblle hackathon: an Express proxy that logs and scores traffic, and a Next.js dashboard over it.',
   alternates: { canonical: '/work/runtime' },
 };
 
 const theme = projectThemes.runtime;
 
-/** Deterministic sparkline path. Decorative — not a reading of real traffic. */
+/** Deterministic sparkline path. Decorative, not a reading of real traffic. */
 function spark(seedInit: number, points = 42, w = 240, h = 56) {
   let seed = seedInit;
   const rnd = () => {
@@ -41,7 +41,7 @@ export default function RuntimePage() {
         {/* ── Hero: quiet, with instrumentation immediately under it ── */}
         <section className="art-pad pt-[18vh] pb-[8vh]">
           <div className="art-mono mb-6" style={{ color: 'var(--accent)' }}>
-            Hackathon, 24 hours
+            Treblle hackathon, 24 hours
           </div>
           <div className="flex flex-wrap items-end justify-between gap-10">
             <h1
@@ -59,7 +59,7 @@ export default function RuntimePage() {
                 maxWidth: '26ch',
               }}
             >
-              An API monitoring dashboard, start to finish, in a day.
+              An API monitoring platform, both halves, in a day.
             </p>
           </div>
         </section>
@@ -116,24 +116,31 @@ export default function RuntimePage() {
             style={{ fontSize: '1.2rem', lineHeight: 1.65, color: 'var(--ink-2)' }}
           >
             <p>
-              The brief was an API monitoring dashboard and the clock was 24
-              hours, so most of the decisions were about what to leave out.
-              Latency, throughput and errors made the cut. Everything else got
-              dropped, which in hindsight is roughly the right list anyway.
+              Treblle set the brief: build something useful for API monitoring.
+              I built both ends. Requests pass through an Express proxy that logs
+              them, scores each one for security problems, resolves the caller to
+              a rough location, and rolls the results up into pre-computed
+              metrics so the dashboard is reading summaries rather than
+              recomputing on every load. The Next.js front end sits on top of
+              that.
             </p>
             <p style={{ marginTop: '1.2em' }}>
-              Building against a deadline that short changes how you work. There
-              was no time to make anything configurable, so every choice about
-              thresholds and time windows got hard-coded to whatever looked
-              reasonable at 3am. That is the first thing I would undo.
+              A deadline that short changes how you work. Aggregating metrics up
+              front was the decision that paid off, since it meant the dashboard
+              stayed fast without any caching work. The one I regret is hard-coding
+              every threshold and time window to whatever looked reasonable at 3am,
+              because nothing is configurable without a redeploy. SQLite was the
+              right call for a hackathon and the first thing I would replace.
             </p>
           </div>
           <dl className="grid grid-cols-2 lg:grid-cols-1 gap-6 self-start">
             {[
-              ['Built with', 'Next.js, TypeScript'],
-              ['Auth', 'NextAuth.js'],
-              ['Data layer', 'SWR, Recharts'],
+              ['Front end', 'Next.js, TypeScript, SWR, Recharts'],
+              ['Back end', 'Node, Express, TypeScript'],
+              ['Data', 'Prisma, SQLite'],
+              ['Auth', 'JWT and OAuth'],
               ['Built in', '24 hours'],
+              ['Source', 'Frontend and backend on GitHub'],
             ].map(([k, v]) => (
               <div key={k}>
                 <dt className="art-mono mb-1" style={{ color: 'var(--ink-3)' }}>
