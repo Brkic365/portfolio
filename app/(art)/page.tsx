@@ -377,75 +377,79 @@ export default function Home() {
       </section>
 
       {/* ── More work ────────────────────────────────────────────────
-          A strip rather than a second list. The section header is inset,
-          the strip itself runs full width so cards reach the edge.      */}
+          The track carries the set twice. The second copy is decorative:
+          hidden from assistive tech and out of the tab order, so nobody
+          hears or tabs through nine duplicate links.                    */}
       <section data-no-reveal style={{ borderTop: '1px solid var(--rule)' }}>
-        <div className="art-pad pt-[8vh] pb-6 flex flex-wrap items-baseline justify-between gap-3">
+        <div className="art-pad pt-[8vh] pb-8">
           <h2
             className="art-display"
             style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', color: 'var(--ink)' }}
           >
             More work
           </h2>
-          <span className="art-mono" style={{ color: 'var(--ink-3)' }}>
-            Scroll sideways
-          </span>
         </div>
 
-        <div className="art-strip pb-[8vh]" aria-label="More projects">
-          {more.map((item) => {
-            const card = (
-              <div className="art-mini">
-                {item.image ? (
-                  <div className={`art-mini-media ${item.lift ? 'art-lift' : ''}`}>
-                    <Image
-                      src={item.image}
-                      alt={`${item.name} interface`}
-                      fill
-                      sizes="18rem"
-                    />
-                  </div>
-                ) : (
-                  <div className="art-mini-media art-mini-blank">
-                    <span
-                      className="art-display"
-                      style={{ fontSize: '1.4rem', color: 'var(--ink-3)' }}
+        <div className="art-marquee pb-[8vh]">
+          <div className="art-marquee-track">
+            {[0, 1].map((copy) =>
+              more.map((item) => {
+                const duplicate = copy === 1;
+                const card = (
+                  <div className="art-mini">
+                    {item.image ? (
+                      <div className={`art-mini-media ${item.lift ? 'art-lift' : ''}`}>
+                        <Image src={item.image} alt={`${item.name} interface`} fill sizes="17rem" />
+                      </div>
+                    ) : (
+                      <div className="art-mini-media art-mini-blank">
+                        <span
+                          className="art-display"
+                          style={{ fontSize: '1.4rem', color: 'var(--ink-3)' }}
+                        >
+                          {item.name}
+                        </span>
+                      </div>
+                    )}
+                    <h3
+                      className="art-display mt-4 mb-1"
+                      style={{ fontSize: '1.35rem', color: 'var(--ink)' }}
                     >
                       {item.name}
-                    </span>
+                    </h3>
+                    <p
+                      className="art-serif"
+                      style={{ fontSize: '0.95rem', lineHeight: 1.45, color: 'var(--ink-2)' }}
+                    >
+                      {item.note}
+                    </p>
                   </div>
-                )}
-                <h3
-                  className="art-display mt-4 mb-1"
-                  style={{ fontSize: '1.35rem', color: 'var(--ink)' }}
-                >
-                  {item.name}
-                </h3>
-                <p
-                  className="art-serif"
-                  style={{ fontSize: '0.95rem', lineHeight: 1.45, color: 'var(--ink-2)' }}
-                >
-                  {item.note}
-                </p>
-              </div>
-            );
+                );
 
-            return item.internal ? (
-              <Link key={item.name} href={item.href} className="block">
-                {card}
-              </Link>
-            ) : (
-              <a
-                key={item.name}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
-              >
-                {card}
-              </a>
-            );
-          })}
+                const key = `${item.name}-${copy}`;
+                const hide = duplicate
+                  ? { 'aria-hidden': true as const, tabIndex: -1 }
+                  : {};
+
+                return item.internal ? (
+                  <Link key={key} href={item.href} className="block" {...hide}>
+                    {card}
+                  </Link>
+                ) : (
+                  <a
+                    key={key}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                    {...hide}
+                  >
+                    {card}
+                  </a>
+                );
+              }),
+            )}
+          </div>
         </div>
       </section>
 

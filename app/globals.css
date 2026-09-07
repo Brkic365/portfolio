@@ -202,29 +202,68 @@ body {
 /* ---------------------------------------------------------------------------
    More work
 
-   A horizontal strip rather than a second full list, so the smaller projects
-   look like they belong without competing with the seven above. Native
-   overflow with scroll snapping, which means no client JavaScript, and it
-   stays scrollable by touch, trackpad, and keyboard once a card is focused.
-   The strip carries its own inline padding instead of sitting inside .art-pad,
-   so cards can run to the edge of the viewport.
+   A marquee rather than a second full list, so the smaller projects look like
+   they belong without competing with the seven above. The track holds the set
+   twice and slides by exactly one copy, which loops seamlessly.
+
+   It pauses on hover and on focus-within, because you cannot click a moving
+   target and a keyboard user needs it to stop when they tab into it. Under
+   prefers-reduced-motion the animation is dropped entirely and the strip goes
+   back to being scrolled by hand.
    --------------------------------------------------------------------------- */
 
-.art-strip {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(14rem, 18rem);
-  gap: 1.25rem;
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  scroll-padding-inline: clamp(1.25rem, 5vw, 5.5rem);
-  padding-inline: clamp(1.25rem, 5vw, 5.5rem);
-  padding-bottom: 1.25rem;
-  overscroll-behavior-x: contain;
+.art-marquee {
+  position: relative;
+  overflow: hidden;
+  /* Faded edges, so cards enter and leave rather than being cut off. */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+}
+
+.art-marquee-track {
+  display: flex;
+  gap: 3rem;
+  width: max-content;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .art-marquee-track {
+    animation: art-marquee 60s linear infinite;
+  }
+
+  .art-marquee:hover .art-marquee-track,
+  .art-marquee:focus-within .art-marquee-track {
+    animation-play-state: paused;
+  }
+}
+
+/* Half the track is one full copy of the set. Half a gap comes off too, or
+   the seam shows as a double gap on every loop. */
+@keyframes art-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 1.5rem));
+  }
+}
+
+/* No animation to pause, so let people push it along themselves. */
+@media (prefers-reduced-motion: reduce) {
+  .art-marquee {
+    overflow-x: auto;
+  }
+
+  .art-marquee-track {
+    animation: none !important;
+  }
 }
 
 .art-mini {
-  scroll-snap-align: start;
+  width: 17rem;
+  flex: none;
 }
 
 .art-mini-media {
@@ -239,7 +278,7 @@ body {
 }
 
 .art-mini:hover .art-mini-media,
-.art-strip a:focus-visible .art-mini-media {
+.art-marquee a:focus-visible .art-mini-media {
   transform: translateY(-4px);
 }
 
