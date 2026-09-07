@@ -60,17 +60,6 @@ const work = [
     href: '/work/shelf',
   },
   {
-    slug: 'stocks-royale',
-    url: 'stocks-royale.vercel.app',
-    lift: true,
-    name: 'Stocks Royale',
-    line: 'A trading game running on simulated market data',
-    tag: 'College',
-    stack: 'Next.js, Node, PostgreSQL, Socket.io',
-    image: '/projects/stocks-royale.png',
-    href: '/work/stocks-royale',
-  },
-  {
     slug: 'route-master',
     url: 'github.com/Brkic365/routeMaster',
     lift: true,
@@ -94,15 +83,24 @@ const work = [
   },
 ];
 
-const archive: [string, string][] = [
-  ['AI MotionMetrics', 'https://ai-motion-metrics.vercel.app/'],
-  ['EBankc', 'https://ebankc.vercel.app/'],
-  ['RocketWizard', 'https://rocket-wizard.vercel.app/'],
-  ['Digital Era', 'https://www.the-digital-era.com/'],
-  ['by Marro', 'https://bymarro.vercel.app/'],
-  ['SiteBoost', 'https://site-boost.vercel.app/'],
-  ['LuxuryPerspective', 'https://luxury-perspective.vercel.app/'],
-  ['DreamFinders', 'https://dream-finders.vercel.app/'],
+interface ArchiveItem {
+  name: string;
+  href: string;
+  /** True when the link goes to a project page here rather than off-site. */
+  internal?: boolean;
+}
+
+const archive: ArchiveItem[] = [
+  // Kept its full page; it just no longer earns a slot in the main list.
+  { name: 'Stocks Royale', href: '/work/stocks-royale', internal: true },
+  { name: 'AI MotionMetrics', href: 'https://ai-motion-metrics.vercel.app/' },
+  { name: 'EBankc', href: 'https://ebankc.vercel.app/' },
+  { name: 'RocketWizard', href: 'https://rocket-wizard.vercel.app/' },
+  { name: 'Digital Era', href: 'https://www.the-digital-era.com/' },
+  { name: 'by Marro', href: 'https://bymarro.vercel.app/' },
+  { name: 'SiteBoost', href: 'https://site-boost.vercel.app/' },
+  { name: 'LuxuryPerspective', href: 'https://luxury-perspective.vercel.app/' },
+  { name: 'DreamFinders', href: 'https://dream-finders.vercel.app/' },
 ];
 
 export default function Home() {
@@ -332,18 +330,28 @@ export default function Home() {
           Older work
         </div>
         <div className="flex flex-wrap gap-x-8 gap-y-3">
-          {archive.map(([name, url]) => (
-            <a
-              key={name}
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="art-serif art-link"
-              style={{ fontSize: 'clamp(1.1rem, 2vw, 1.6rem)', color: 'var(--ink-2)' }}
-            >
-              {name}
-            </a>
-          ))}
+          {archive.map((item) => {
+            const style = {
+              fontSize: 'clamp(1.1rem, 2vw, 1.6rem)',
+              color: 'var(--ink-2)',
+            } as const;
+            return item.internal ? (
+              <Link key={item.name} href={item.href} className="art-serif art-link" style={style}>
+                {item.name}
+              </Link>
+            ) : (
+              <a
+                key={item.name}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="art-serif art-link"
+                style={style}
+              >
+                {item.name}
+              </a>
+            );
+          })}
         </div>
       </section>
 

@@ -196,11 +196,11 @@ export default function ShelfPage() {
             Back to index
           </Link>
           <Link
-            href="/work/stocks-royale"
+            href="/work/route-master"
             className="art-display"
             style={{ fontSize: 'clamp(1.8rem, 5vw, 4rem)', color: 'var(--ink)' }}
           >
-            Stocks Royale
+            RouteMaster
           </Link>
         </nav>
       </main>

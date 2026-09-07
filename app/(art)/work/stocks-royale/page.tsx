@@ -179,13 +179,15 @@ export default function StocksRoyalePage() {
           <Link href="/" className="art-mono" style={{ color: 'var(--ink-3)' }}>
             Back to index
           </Link>
-          <Link
-            href="/work/route-master"
+          <a
+            href="https://stocks-royale.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
             className="art-display"
-            style={{ fontSize: 'clamp(1.8rem, 5vw, 4rem)', color: 'var(--ink)' }}
+            style={{ fontSize: 'clamp(1.8rem, 5vw, 4rem)', color: 'var(--accent)' }}
           >
-            RouteMaster
-          </Link>
+            Open it
+          </a>
         </nav>
       </main>
     </div>
