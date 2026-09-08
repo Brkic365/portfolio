@@ -457,7 +457,7 @@ export default function Home() {
             them.
           </p>
           <p style={{ marginTop: '1.2em' }}>
-            Six months as the only QA engineer on a mobile app changed how I
+            Four months as the only QA engineer on a mobile app changed how I
             write my own code. Testing, reproducing a defect properly and
             reading someone else&rsquo;s work carefully are habits now rather
             than things I mean to get around to. What I want next is a team
