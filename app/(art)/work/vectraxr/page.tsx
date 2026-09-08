@@ -180,8 +180,8 @@ export default function VectraXRPage() {
         >
           <dl className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-8">
             {[
-              ['Role', 'Co-founder and CEO'],
-              ['I own', 'Product direction and 3D engineering'],
+              ['Role', 'Co-founder'],
+              ['I own', 'Frontend architecture, 3D pipeline, code review'],
               ['Team', 'Three founders, no outside investors'],
               ['Runs in', 'The browser. No app, no headset'],
             ].map(([k, v]) => (
@@ -211,6 +211,14 @@ export default function VectraXRPage() {
               thing someone is about to spend five figures on.
             </p>
             <p style={{ marginTop: '1.2em' }}>
+              Getting a client&rsquo;s CAD files into something a browser can
+              load is its own problem, so that runs as a separate Python service.
+              Conversions are cached against a hash of the source file, which
+              means the same model is never converted twice, and a failed
+              conversion has defined behaviour rather than leaving a product
+              half-broken in the catalogue.
+            </p>
+            <p style={{ marginTop: '1.2em' }}>
               It also has to drop into someone else&rsquo;s storefront. The
               configurator embeds into Shopify, WooCommerce or Webflow with a
               single tag, so it has to behave inside a page it does not control.
@@ -218,10 +226,10 @@ export default function VectraXRPage() {
           </div>
           <dl className="grid grid-cols-2 lg:grid-cols-1 gap-6 self-start">
             {[
-              ['Marketing site', 'Next.js on Vercel'],
-              ['Configurator', 'WebGL in the browser'],
-              ['Placement', 'WebAR, fitness vertical'],
-              ['Based in', 'Zagreb, Croatia'],
+              ['Frontend', 'Turborepo monorepo, Next.js App Router'],
+              ['Data', 'Prisma, PostgreSQL, REST and JSON APIs'],
+              ['Auth', 'Clerk, OAuth and OIDC'],
+              ['3D pipeline', 'Python and Flask, cached on object storage'],
             ].map(([k, v]) => (
               <div key={k}>
                 <dt className="art-mono mb-1" style={{ color: 'var(--ink-3)' }}>

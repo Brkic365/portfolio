@@ -11,7 +11,7 @@ const work = [
     name: 'Vectra XR',
     line: '3D configurators for things that are built to order',
     tag: 'Co-founder',
-    stack: 'Next.js, WebGL, WebAR',
+    stack: 'Turborepo, Next.js, Prisma',
     image: '/projects/vectraxr.png',
     href: '/work/vectraxr',
   },
@@ -152,6 +152,37 @@ const more: MoreItem[] = [
     note: 'Search-driven property browsing',
     href: 'https://dream-finders.vercel.app/',
     image: '/projects/dreamfinders.png',
+  },
+];
+
+interface Role {
+  period: string;
+  role: string;
+  org: string;
+  /** Set when the organisation has a page here. */
+  href?: string;
+  note: string;
+}
+
+const experience: Role[] = [
+  {
+    period: 'Feb to May 2026',
+    role: 'Junior QA Engineer',
+    org: 'Porsche eBike Performance',
+    note: 'Sole active QA on the mobile app, owning test planning, execution and reporting across iOS and Android. Wrote Appium automation for regression flows so repeatable checks stopped depending on someone walking through the app by hand, and tested gRPC and HTTP endpoints against the application contract rather than only through the interface. International team, English as the working language. The role ended when the site closed.',
+  },
+  {
+    period: '2021 to now',
+    role: 'Full-stack developer, freelance',
+    org: 'Self-employed',
+    note: 'Client work end to end: scoping, build, testing, deployment and maintenance in production. Branch workflow with pull requests, and GitHub Actions so projects deploy on merge rather than by hand.',
+  },
+  {
+    period: 'Dec 2025 to now',
+    role: 'Co-founder and developer',
+    org: 'Vectra XR',
+    href: '/work/vectraxr',
+    note: 'Led the frontend architecture, wrote the Python service that converts 3D files, and ran code review and the release process for two other engineers.',
   },
 ];
 
@@ -302,6 +333,58 @@ export default function Home() {
         })}
       </section>
 
+      {/* ── Experience ───────────────────────────────────────────────
+          Employment goes above About. It is the part a recruiter is
+          scanning for and the part a portfolio usually leaves out.    */}
+      <section className="art-pad py-[12vh]" style={{ borderTop: '1px solid var(--rule)' }}>
+        <h2
+          className="art-display mb-10"
+          style={{ fontSize: 'clamp(2.4rem, 6vw, 5rem)', color: 'var(--ink)' }}
+        >
+          Experience
+        </h2>
+
+        {experience.map((e, i) => (
+          <div
+            key={e.role}
+            className="grid lg:grid-cols-[11rem_minmax(0,1fr)] gap-x-10 gap-y-2 py-8"
+            style={{ borderTop: i === 0 ? 'none' : '1px solid var(--rule)' }}
+          >
+            <div className="art-mono lg:pt-2" style={{ color: 'var(--ink-3)' }}>
+              {e.period}
+            </div>
+            <div>
+              <h3
+                className="art-display"
+                style={{ fontSize: 'clamp(1.5rem, 2.8vw, 2.2rem)', color: 'var(--ink)' }}
+              >
+                {e.role}
+              </h3>
+              <div className="art-mono mt-2 mb-4" style={{ color: 'var(--ink-2)' }}>
+                {e.href ? (
+                  <Link href={e.href} className="art-link">
+                    {e.org}
+                  </Link>
+                ) : (
+                  e.org
+                )}
+              </div>
+              <p
+                className="art-serif"
+                style={{
+                  fontSize: '1.1rem',
+                  lineHeight: 1.6,
+                  color: 'var(--ink-2)',
+                  maxWidth: '58ch',
+                }}
+              >
+                {e.note}
+              </p>
+            </div>
+          </div>
+        ))}
+      </section>
+
       {/* ── About ────────────────────────────────────────────────────
           Sits after the work on purpose. Anyone scanning gets the projects
           first; this is here for the people who kept reading.            */}
@@ -329,7 +412,7 @@ export default function Home() {
           <dl className="grid grid-cols-2 lg:grid-cols-1 gap-6">
             {[
               ['Based in', 'Zagreb, Croatia'],
-              ['Studying', 'Computer science at TVZ, graduating June 2027'],
+              ['Studying', 'Computer engineering at TVZ, graduating June 2027'],
               ['Working with', 'TypeScript, Next.js, Node, PostgreSQL, Python'],
               ['Availability', 'Open to full-time roles, can start immediately'],
             ].map(([k, v]) => (
@@ -373,8 +456,16 @@ export default function Home() {
             the part a client has to be able to use without me sitting next to
             them.
           </p>
+          <p style={{ marginTop: '1.2em' }}>
+            Six months as the only QA engineer on a mobile app changed how I
+            write my own code. Testing, reproducing a defect properly and
+            reading someone else&rsquo;s work carefully are habits now rather
+            than things I mean to get around to. What I want next is a team
+            where someone more experienced reviews what I write.
+          </p>
         </div>
       </section>
+
 
       {/* ── More work ────────────────────────────────────────────────
           The track carries the set twice. The second copy is decorative:
