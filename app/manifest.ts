@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
       "Full-stack engineer building production SaaS with Next.js, TypeScript, and PostgreSQL.",
     start_url: "/",
     display: "standalone",
-    background_color: "#0a0a0a",
-    theme_color: "#0a0a0a",
+    background_color: "#0e0e10",
+    theme_color: "#0e0e10",
     icons: [
       {
         src: "/android-chrome-192x192.png",

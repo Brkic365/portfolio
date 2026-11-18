@@ -1,16 +1,21 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import Shot from '@/components/art/Shot';
-import { projectThemes, themeVars } from '@/data/projectThemes';
+import Band from '@/components/site/Band';
+import CaseStudy from '@/components/site/CaseStudy';
+import Facts from '@/components/site/Facts';
+import Frame from '@/components/site/Frame';
+import SectionHead from '@/components/site/SectionHead';
+import { getProject } from '@/data/projects';
+import { pageMetadata } from '@/lib/meta';
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: 'RouteMaster',
   description:
     'A traffic simulation and routing tool written in Python with no external libraries, running A* over OpenStreetMap road data.',
-  alternates: { canonical: '/work/route-master' },
-};
+  path: '/work/route-master',
+  card: 'route-master',
+  type: 'article',
+});
 
-const theme = projectThemes['route-master'];
+const p = getProject('route-master');
 
 const W = 1400;
 const H = 420;
@@ -97,163 +102,127 @@ function network() {
   return { nodes, edges, path, visited, start, goal };
 }
 
+
 export default function RouteMasterPage() {
   const { nodes, edges, path, visited } = network();
 
   return (
-    <div className="art" data-theme="route-master" style={themeVars(theme)}>
-      <main>
-        {/* ── Hero: the diagram is the hero ────────────────────────── */}
-        <section className="art-pad pt-[16vh] pb-[6vh]">
-          <div className="art-mono mb-6" style={{ color: 'var(--accent)' }}>
-            College project, Python
-          </div>
-          <div className="flex flex-wrap items-end justify-between gap-8">
-            <h1
-              className="art-display art-enter art-enter-2"
-              style={{ fontSize: 'clamp(2.8rem, 10vw, 10rem)', color: 'var(--ink)' }}
-            >
-              Route
-              <br />
-              Master
-            </h1>
-            <p
-              className="art-serif"
-              style={{
-                fontSize: 'clamp(1.05rem, 1.8vw, 1.45rem)',
-                lineHeight: 1.4,
-                color: 'var(--ink-2)',
-                maxWidth: '28ch',
-              }}
-            >
-              Vehicles finding their way across a real road network, with
-              nothing but the standard library behind it.
-            </p>
-          </div>
-        </section>
-
-        <section className="w-full" style={{ borderTop: '1px solid var(--rule)' }}>
-          <svg
-            viewBox={`0 0 ${W} ${H}`}
-            preserveAspectRatio="xMidYMid slice"
-            role="img"
-            aria-label="A road network graph with one route solved across it"
-            style={{ width: '100%', height: 'clamp(240px, 52vh, 460px)', display: 'block' }}
-          >
-            {edges.map(([a, b], i) => (
-              <line
-                key={i}
-                x1={nodes[a].x}
-                y1={nodes[a].y}
-                x2={nodes[b].x}
-                y2={nodes[b].y}
-                stroke="var(--rule)"
-                strokeWidth="1"
-              />
-            ))}
-            {visited.map((n, i) => (
-              <circle key={i} cx={nodes[n].x} cy={nodes[n].y} r="2" fill="var(--ink-3)" opacity="0.5" />
-            ))}
-            <polyline
-              points={path.map((n) => `${nodes[n].x},${nodes[n].y}`).join(' ')}
-              fill="none"
-              stroke="var(--accent)"
-              strokeWidth="2.5"
-              strokeLinejoin="round"
-            />
-            {[path[0], path[path.length - 1]].map((n, i) => (
-              <circle key={i} cx={nodes[n].x} cy={nodes[n].y} r="6" fill="var(--accent)" />
-            ))}
-          </svg>
-          <div
-            className="art-pad art-mono py-3 flex flex-wrap gap-x-8 gap-y-1"
-            style={{ borderTop: '1px solid var(--rule)', color: 'var(--ink-3)' }}
-          >
-            <span>{nodes.length} nodes</span>
-            <span>{edges.length} edges</span>
-            <span>{visited.length} expanded</span>
-            <span style={{ color: 'var(--accent)' }}>{path.length - 1} hops</span>
-          </div>
-        </section>
-
-        {/* ── Technical notes, set like a drawing schedule ─────────── */}
-        <section className="art-pad py-[10vh]">
-          <dl className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10">
-            {[
-              ['Search', 'A* with a straight-line heuristic'],
-              ['Neighbours', 'Spatial hash written from scratch'],
-              ['Data', 'OpenStreetMap road geometry'],
-              ['Dependencies', 'None. Standard library only'],
-            ].map(([k, v]) => (
-              <div key={k} style={{ borderTop: '1px solid var(--rule)', paddingTop: '1rem' }}>
-                <dt className="art-mono mb-2" style={{ color: 'var(--accent)' }}>
-                  {k}
-                </dt>
-                <dd className="art-serif" style={{ fontSize: '1.05rem', color: 'var(--ink)' }}>
-                  {v}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-
-        <section className="art-pad py-[9vh]">
-          <Shot
-            src="/projects/route-master.png"
-            alt="The RouteMaster simulation dashboard"
-            url="github.com/Brkic365/routeMaster"
-            lift={true}
-            ratio="16 / 10"
-            sizes="(max-width: 1024px) 92vw, 78vw"
-          />
-        </section>
-
-        <section className="art-pad py-[10vh]">
-          <div
-            className="art-serif"
-            style={{
-              fontSize: '1.2rem',
-              lineHeight: 1.65,
-              color: 'var(--ink-2)',
-              maxWidth: '40rem',
-            }}
-          >
-            <p>
-              Built for college, in Python, with a rule I set myself: no
-              external libraries. Everything runs on the standard library,
-              including the pathfinding, the spatial indexing and the drawing.
-              That is also why it looks the way it does. Tkinter is not going to
-              win any design awards, and I decided early that I would rather
-              have the algorithms be the interesting part than spend the time
-              making it pretty.
-            </p>
-            <p style={{ marginTop: '1.2em' }}>
-              Pathfinding across a city is cheap the first time. It gets
-              expensive when hundreds of vehicles each need a fresh route every
-              time something changes, and the plain neighbour search starts
-              eating the whole frame. Bucketing the network into a spatial hash
-              turned that scan into a lookup, which is what made it possible to
-              run the simulation and watch it at the same time.
-            </p>
-          </div>
-        </section>
-
-        <nav
-          className="art-pad py-[8vh] flex flex-wrap items-baseline justify-between gap-6"
-          style={{ borderTop: '1px solid var(--rule)' }}
+    <CaseStudy
+      project={p}
+      hero={{
+        title: (
+          <>
+            Route
+            <br className="mbr" />
+            Master
+          </>
+        ),
+        k: 0.1209,
+        km: 0.223,
+        lead: 'Vehicles finding their way across a real road network, with nothing but the standard library behind it.',
+        role: 'College project, Python',
+      }}
+    >
+      {/* The diagram runs the same search the project does, at build time. */}
+      <section className="diagram" aria-label="Route diagram">
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          preserveAspectRatio="xMidYMid slice"
+          role="img"
+          aria-label="A road network graph with one route solved across it"
+          style={{ height: 'clamp(240px, 52vh, 460px)' }}
         >
-          <Link href="/" className="art-mono" style={{ color: 'var(--ink-3)' }}>
-            Back to index
-          </Link>
-          <Link
-            href="/work/runtime"
-            className="art-display"
-            style={{ fontSize: 'clamp(1.8rem, 5vw, 4rem)', color: 'var(--ink)' }}
-          >
-            Runtime
-          </Link>
-        </nav>
-      </main>
-    </div>
+          {edges.map(([a, b], i) => (
+            <line
+              key={i}
+              x1={nodes[a].x}
+              y1={nodes[a].y}
+              x2={nodes[b].x}
+              y2={nodes[b].y}
+              stroke="rgba(237,236,230,.16)"
+              strokeWidth="1"
+            />
+          ))}
+          {visited.map((n, i) => (
+            <circle key={i} cx={nodes[n].x} cy={nodes[n].y} r="2" fill="var(--ash)" opacity="0.6" />
+          ))}
+          <polyline
+            points={path.map((n) => `${nodes[n].x},${nodes[n].y}`).join(' ')}
+            fill="none"
+            stroke="var(--acc)"
+            strokeWidth="2.5"
+            strokeLinejoin="round"
+          />
+          {[path[0], path[path.length - 1]].map((n, i) => (
+            <circle key={i} cx={nodes[n].x} cy={nodes[n].y} r="6" fill="var(--acc)" />
+          ))}
+        </svg>
+        <div className="legend-row wrap small">
+          <span>{nodes.length} nodes</span>
+          <span>{edges.length} edges</span>
+          <span>{visited.length} expanded</span>
+          <b>{path.length - 1} hops</b>
+        </div>
+      </section>
+
+      {/* Technical notes, set like a drawing schedule. */}
+      <section className="sec wrap" aria-label="Technical notes">
+        <Facts
+          items={[
+            ['Search', 'A* with a straight-line heuristic'],
+            ['Neighbours', 'Spatial hash written from scratch'],
+            ['Data', 'OpenStreetMap road geometry'],
+            ['Dependencies', 'None. Standard library only'],
+          ]}
+        />
+      </section>
+
+      <Frame
+        src={p.image}
+        alt="The RouteMaster simulation dashboard"
+        url={p.url}
+        href={`https://${p.url}`}
+        lift
+        ratio="16 / 10"
+      />
+
+      <Band accent={p.accent} sig={p.sig} />
+
+      <section className="sec wrap" aria-labelledby="rule-h">
+        <SectionHead id="rule-h" title="No libraries" accent={p.accent} note="A rule I set myself." />
+        <div className="prose">
+          <div />
+          <div className="txt">
+            <p className="big">
+              Built for college, in Python, with a rule I set myself: no external libraries.
+            </p>
+            <p>
+              Everything runs on the standard library, including the pathfinding, the spatial indexing
+              and the drawing. That is also why it looks the way it does. Tkinter is not going to win any
+              design awards, and I decided early that I would rather have the algorithms be the
+              interesting part than spend the time making it pretty.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="sec flush wrap" aria-labelledby="hash-h">
+        <SectionHead id="hash-h" title="From a scan to a lookup" size="mid" />
+        <div className="prose">
+          <p className="label small">The spatial hash</p>
+          <div className="txt">
+            <p>
+              Pathfinding across a city is cheap the first time. It gets expensive when hundreds of
+              vehicles each need a fresh route every time something changes, and the plain neighbour
+              search starts eating the whole frame.
+            </p>
+            <p className="big">
+              Bucketing the network into a spatial hash turned that scan into a lookup, which is what
+              made it possible to run the simulation and watch it at the same time.
+            </p>
+          </div>
+        </div>
+      </section>
+    </CaseStudy>
   );
 }

@@ -1,46 +1,29 @@
 import type { Metadata, Viewport } from "next";
-import {
-  Inter,
-  JetBrains_Mono,
-  Instrument_Serif,
-  Newsreader,
-} from "next/font/google";
+import { Archivo } from "next/font/google";
 import "./globals.css";
+import { SITE_URL, ogImage } from "@/lib/meta";
 
+// One family for everything. The variable font carries the width axis, so the
+// display type can run expanded (125%) while body text stays at 100%.
 // latin-ext carries the Croatian diacritics. Without it "Brkić" falls back mid-word.
-const inter = Inter({
-  variable: "--font-inter",
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin", "latin-ext"],
+  axes: ["wdth"],
+  display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin", "latin-ext"],
-});
-
-// Broadsheet: high-contrast display face for mastheads and headlines...
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument",
-  subsets: ["latin", "latin-ext"],
-  weight: "400",
-});
-
-// ...and a text face designed for long-form reading at small sizes.
-const newsreader = Newsreader({
-  variable: "--font-newsreader",
-  subsets: ["latin", "latin-ext"],
-});
-
-const siteUrl = "https://antoniobrkic.com";
+const description =
+  "Antonio Brkić is a full-stack developer in Zagreb building web apps with Next.js, TypeScript and PostgreSQL. Client work, college projects and things built for fun.";
+const short = "Full-stack developer in Zagreb. I build software with something moving in it.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Antonio Brkić, Full-Stack Developer",
     template: "%s | Antonio Brkić",
   },
-  description:
-    "Antonio Brkić is a full-stack developer in Zagreb building web apps with Next.js, TypeScript and PostgreSQL. Client work, college projects and things built for fun.",
+  description,
   keywords: [
     "Antonio Brkić",
     "Full-Stack Developer",
@@ -50,25 +33,25 @@ export const metadata: Metadata = {
     "Web Developer Portfolio",
     "Zagreb",
   ],
-  authors: [{ name: "Antonio Brkić", url: siteUrl }],
+  authors: [{ name: "Antonio Brkić", url: SITE_URL }],
   creator: "Antonio Brkić",
   alternates: {
-    canonical: siteUrl,
+    canonical: SITE_URL,
   },
   openGraph: {
     type: "website",
-    url: siteUrl,
+    url: SITE_URL,
     siteName: "Antonio Brkić",
     title: "Antonio Brkić, Full-Stack Developer",
-    description:
-      "Full-stack developer in Zagreb building web apps with Next.js, TypeScript and PostgreSQL.",
+    description: short,
     locale: "en_US",
+    images: ogImage("home", "Antonio Brkić, full-stack developer in Zagreb"),
   },
   twitter: {
     card: "summary_large_image",
     title: "Antonio Brkić, Full-Stack Developer",
-    description:
-      "Full-stack developer in Zagreb building web apps with Next.js, TypeScript and PostgreSQL.",
+    description: short,
+    images: ogImage("home", "Antonio Brkić")?.map((i) => i.url),
   },
   robots: {
     index: true,
@@ -77,8 +60,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0a0a",
-  colorScheme: "dark light",
+  themeColor: "#0e0e10",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({
@@ -90,7 +73,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Person",
     name: "Antonio Brkić",
-    url: siteUrl,
+    url: SITE_URL,
     jobTitle: "Full-Stack Developer",
     email: "mailto:contact@antoniobrkic.com",
     address: {
@@ -113,10 +96,8 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en">
-      <body
-        className={`${inter.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} ${newsreader.variable} antialiased`}
-      >
+    <html lang="en" className={archivo.variable}>
+      <body>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}

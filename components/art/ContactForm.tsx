@@ -3,21 +3,10 @@
 import { useActionState } from 'react';
 import { sendMessage, type ContactState } from '@/app/(art)/contact/actions';
 
-const field = {
-  width: '100%',
-  background: 'transparent',
-  border: 'none',
-  borderBottom: '1px solid var(--rule)',
-  color: 'var(--ink)',
-  padding: '0.75rem 0',
-  fontSize: '1.05rem',
-  outline: 'none',
-} as const;
-
 /**
- * The one interactive island on the site. Everything else is a server
- * component; a contact form is the place where inline errors and a pending
- * state are worth the client bundle.
+ * The contact form. A contact form is the place where inline errors and a
+ * pending state are worth the client bundle; everything else on the page is
+ * a server component.
  */
 export default function ContactForm() {
   const [state, formAction, pending] = useActionState<ContactState, FormData>(
@@ -27,16 +16,7 @@ export default function ContactForm() {
 
   if (state.ok) {
     return (
-      <div
-        className="art-serif"
-        style={{
-          fontSize: '1.3rem',
-          lineHeight: 1.5,
-          color: 'var(--ink)',
-          borderTop: '2px solid var(--accent)',
-          paddingTop: '1.5rem',
-        }}
-      >
+      <div className="sent" role="status">
         Thanks, that reached me. I usually reply within a day or two.
       </div>
     );
@@ -47,12 +27,7 @@ export default function ContactForm() {
   return (
     // Keyed on the attempt so the inputs remount and re-apply defaultValue
     // after React resets the form on a failed submission.
-    <form
-      key={state.attempt ?? 0}
-      action={formAction}
-      className="grid gap-7"
-      style={{ maxWidth: '36rem' }}
-    >
+    <form key={state.attempt ?? 0} action={formAction} className="form">
       {/* Honeypot. Hidden from people, catches bots. */}
       <input
         type="text"
@@ -63,9 +38,9 @@ export default function ContactForm() {
         style={{ position: 'absolute', left: '-9999px', width: 1, height: 1 }}
       />
 
-      <div className="grid sm:grid-cols-2 gap-7">
+      <div className="two">
         <div>
-          <label htmlFor="name" className="art-mono block mb-2" style={{ color: 'var(--ink-3)' }}>
+          <label htmlFor="name" className="small">
             Your name
           </label>
           <input
@@ -76,11 +51,10 @@ export default function ContactForm() {
             maxLength={100}
             autoComplete="name"
             defaultValue={v?.name}
-            style={field}
           />
         </div>
         <div>
-          <label htmlFor="fromEmail" className="art-mono block mb-2" style={{ color: 'var(--ink-3)' }}>
+          <label htmlFor="fromEmail" className="small">
             Your email
           </label>
           <input
@@ -91,70 +65,35 @@ export default function ContactForm() {
             maxLength={254}
             autoComplete="email"
             defaultValue={v?.fromEmail}
-            style={field}
           />
         </div>
       </div>
 
       <div>
-        <label htmlFor="subject" className="art-mono block mb-2" style={{ color: 'var(--ink-3)' }}>
+        <label htmlFor="subject" className="small">
           Subject
         </label>
-        <input
-          id="subject"
-          name="subject"
-          type="text"
-          required
-          maxLength={200}
-          defaultValue={v?.subject}
-          style={field}
-        />
+        <input id="subject" name="subject" type="text" required maxLength={200} defaultValue={v?.subject} />
       </div>
 
       <div>
-        <label htmlFor="message" className="art-mono block mb-2" style={{ color: 'var(--ink-3)' }}>
+        <label htmlFor="message" className="small">
           Message
         </label>
-        <textarea
-          id="message"
-          name="message"
-          required
-          maxLength={5000}
-          rows={6}
-          defaultValue={v?.message}
-          style={{ ...field, resize: 'vertical' }}
-        />
+        <textarea id="message" name="message" required maxLength={5000} rows={6} defaultValue={v?.message} />
       </div>
 
       {state.error && (
-        <p
-          role="alert"
-          className="art-mono"
-          style={{ color: 'var(--accent)', border: '1px solid var(--accent)', padding: '0.9rem 1rem' }}
-        >
+        <p role="alert" className="err small">
           {state.error}
         </p>
       )}
 
-      <div className="flex items-center gap-6">
-        <button
-          type="submit"
-          disabled={pending}
-          className="art-mono"
-          style={{
-            background: 'var(--accent)',
-            color: 'var(--on-accent)',
-            padding: '1em 1.8em',
-            border: 'none',
-            cursor: pending ? 'default' : 'pointer',
-            opacity: pending ? 0.7 : 1,
-          }}
-        >
+      <div className="send">
+        <button type="submit" disabled={pending}>
           {pending ? 'Sending' : 'Send message'}
         </button>
-        <span className="art-mono" style={{ color: 'var(--ink-3)' }}>
-          or contact@antoniobrkic.com
-        </span>
+        <span className="alt small">or contact@antoniobrkic.com</span>
       </div>
     </form>
   );
