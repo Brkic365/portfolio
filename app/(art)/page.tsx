@@ -6,7 +6,7 @@ import Band from '@/components/site/Band';
 import SectionHead from '@/components/site/SectionHead';
 import SiteFooter from '@/components/site/SiteFooter';
 import TopNav from '@/components/site/TopNav';
-import { featured, more, signatureAccents } from '@/data/projects';
+import { featured, more } from '@/data/projects';
 import { activityLabel, getActivity } from '@/lib/activity';
 import { pageMetadata } from '@/lib/meta';
 import { publicFileExists } from '@/lib/publicAssets';
@@ -105,7 +105,6 @@ export default async function Home() {
           projects={featured.map(({ slug, name, line, role, stack, url, urlLabel, image, lift, sig, accent }) => ({
             slug, name, line, role, stack, url, urlLabel, image, lift, sig, accent,
           }))}
-          accents={signatureAccents}
         />
 
         <Band />

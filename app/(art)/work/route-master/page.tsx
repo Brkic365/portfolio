@@ -186,7 +186,7 @@ export default function RouteMasterPage() {
         ratio="16 / 10"
       />
 
-      <Band accent={p.accent} sig={p.sig} />
+      <Band />
 
       <section className="sec wrap" aria-labelledby="rule-h">
         <SectionHead id="rule-h" title="No libraries" accent={p.accent} note="A rule I set myself." />

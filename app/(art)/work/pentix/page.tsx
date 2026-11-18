@@ -56,7 +56,7 @@ export default function PentixPage() {
         ratio="16 / 10"
       />
 
-      <Band accent={p.accent} sig={p.sig} />
+      <Band />
 
       <section className="sec wrap" aria-labelledby="dev-h">
         <SectionHead id="dev-h" title="On the device" accent={p.accent} note="A product decision before it was a technical one." />

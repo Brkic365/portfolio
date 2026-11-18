@@ -3,9 +3,10 @@
 My personal site, live at **[antoniobrkic.com](https://antoniobrkic.com)**.
 
 An index of the work at `/`, and a case study per project at `/work/<slug>`. The
-whole site sits on one moving particle field. The big type is cut out of it, so
-the field shows through the letters, and each project has a motion of its own
-that the field takes on when you point at the project or open its page.
+whole site sits on one moving particle field that runs behind every page, top
+to bottom, with no edges. The big type is cut out of it, so the field shows
+through the letters, and each project has a motion of its own that the field
+takes on when you point at the project or open its page.
 
 ## How it is built
 
@@ -17,9 +18,9 @@ route, which means there is no public POST endpoint and the Resend key never
 reaches the browser.
 
 **The pages are server components.** Anything that moves is a small client
-component dropped into a server-rendered page: `FieldCanvas`, `Knockout`,
-`Gallery`, `FieldTuning` and `ContactForm`. Server code asks for a field by
-role (`preset="band"`) rather than passing option objects across the client
+component dropped into a server-rendered page: `Backdrop`, `PageSignature`,
+`FieldCanvas`, `Knockout`, `Gallery`, `FieldTuning` and `ContactForm`. Server
+code asks for a field by role (`preset="quiet"`) rather than passing option objects across the client
 boundary. The presets live in `lib/field/presets.ts`.
 
 **The contact form keeps what you typed.** React 19 resets an uncontrolled form
@@ -45,6 +46,37 @@ Particles leave trails in an offscreen buffer that fades a little every frame,
 and that buffer is composited into the visible canvas. A field can also take a
 mask, which is how the knockouts work.
 
+### The background field
+
+There is one field behind everything: `components/field/Backdrop.tsx`, mounted
+once in `app/(art)/layout.tsx`, so it survives client navigation and never
+rebuilds between pages. It is a fixed canvas the size of the viewport, never
+the size of the page, at `z-index: -1`. That is why `body` has no background
+(the ground is painted by `html`) and why nothing else on the page may paint an
+opaque ground: any box with its own background would cut a hole in the field
+with a hard edge. Bands between sections are now just space it shows through.
+
+- **Brighter at the top.** It stands in for the hero's own field. Its trail
+  opacity eases from `TOP` at the top of a page down to the preset's `outside`
+  over the first screen of scroll, so the hero fades into the rest of the page
+  instead of ending at a box edge.
+- **Drifts with the scroll.** It follows the page at 30% of its speed
+  (`handle.shift()`, in whole device pixels so the trails never blur), on top of
+  the scroll-velocity boost every field gets.
+- **Pointer and clicks anywhere.** It listens on the document, so the field
+  bends around the cursor and a click drops a vortex wherever you are.
+- **Takes the page's signature.** Curl and orange on the index. A case study
+  renders `PageSignature`, which sets its own signature and accent through
+  `lib/field/backdrop.ts` and hands back curl when you leave. The gallery
+  morphs it to the project under the pointer (or, without hover, the one in the
+  middle of the screen), and a click bursts it out of the project's title.
+- **Readable on top.** Running text sits on a scrim: a soft, feathered dark
+  wash just behind the text column (two crossed gradient masks in
+  `globals.css`), never a hard panel. Body text measures at least 4.5:1 against
+  the field behind it, sampled from screenshots.
+
+On phones it runs too, with `maxNarrow` particles.
+
 It has to run on every page without costing much, so:
 
 - **One loop for the page.** Every field on the page shares a single
@@ -57,8 +89,7 @@ It has to run on every page without costing much, so:
 - **Stopped while the tab is hidden.** The loop is cancelled on
   `visibilitychange` rather than relying on the browser to throttle rAF.
 - **Capped on narrow screens.** Below 700 CSS px a field uses `maxNarrow`
-  instead of `maxN`. Phones get roughly a quarter of the particles, and the
-  gallery's background field is switched off there entirely.
+  instead of `maxN`. Phones get roughly a quarter of the particles.
 - **Resized only when it matters.** On touch devices only a width change
   rebuilds a field, so the address bar sliding in and out does not reset it.
 - **Still for reduced motion.** With `prefers-reduced-motion` the field draws
@@ -69,6 +100,12 @@ Scrolling briefly speeds up every trail, and the pointer bends the field around
 it. Neither does anything under reduced motion.
 
 ### Knockouts
+
+A knockout draws only inside its letters (`outside: 0` in every knockout
+preset), so it sits on the background field with no rectangle around it. Almost
+every respawn lands inside the letters, since particles anywhere else would
+never be seen. The hero name and the case study titles work the same way, with
+denser fields of their own.
 
 `components/field/Knockout.tsx` renders a heading as real text, laid out by CSS,
 selectable and read by screen readers. The canvas behind it traces that layout:
@@ -189,19 +226,21 @@ GITHUB_TOKEN=optional_for_the_activity_count
 
 ```
 app/
-  (art)/            Route group for the site. Its layout holds the lift filter
-                    and applies the activity tuning.
+  (art)/            Route group for the site. Its layout holds the background
+                    field, the lift filter and applies the activity tuning.
     page.tsx        Index: hero, gallery, experience, about, more work, contact
     work/<slug>/    One case study per project
     contact/        Contact page and its server action
   sitemap.ts        Built from data/projects.ts
 components/
-  field/            FieldCanvas, Knockout, Gallery, FieldTuning (client)
+  field/            Backdrop, PageSignature, FieldCanvas, Knockout, Gallery,
+                    FieldTuning (client)
   site/             CaseStudy, CaseHero, NextProject, Band, Frame, Facts and friends
   art/ContactForm.tsx
 data/projects.ts    Every project: copy, accent, signature, chain order
 lib/
-  field/            engine, signatures, presets, noise, useField, transition
+  field/            engine, signatures, presets, noise, useField, transition,
+                    backdrop (the background field's shared handle)
   activity.ts       Build-time GitHub commit count
   meta.ts           Page metadata and social card paths
   publicAssets.ts   Build-time file existence checks

@@ -4,8 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, type MouseEvent } from 'react';
-import FieldCanvas from '@/components/field/FieldCanvas';
 import Knockout from '@/components/field/Knockout';
+import { backdrop, restBackdrop } from '@/lib/field/backdrop';
 import type { FieldHandle } from '@/lib/field/engine';
 import type { Signature } from '@/lib/field/signatures';
 import { canMorph, morphTo } from '@/lib/field/transition';
@@ -27,28 +27,24 @@ export interface GalleryProject {
 const WORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
 
 /**
- * Selected work: a sticky horizontal track driven by vertical scroll, with a
- * field behind it that takes on each project's signature when you hover,
- * focus or (without hover) scroll a project into view. Below 820px it is a
- * plain vertical list, and each name's own knockout carries the signature.
+ * Selected work: a sticky horizontal track driven by vertical scroll. The
+ * site's background field takes on each project's signature when you hover,
+ * focus or (without hover) scroll a project into view, and so does the
+ * project name's own knockout. Below 820px it is a plain vertical list.
  *
- * Clicking into a project streams particles out of its title, then morphs
- * the title into the case study's hero through a view transition.
+ * Clicking into a project streams the background field out of its title,
+ * then morphs the title into the case study's hero through a view transition.
  */
 export default function Gallery({
   projects,
-  accents,
 }: {
   projects: GalleryProject[];
-  accents: Partial<Record<Signature, string>>;
 }) {
   const router = useRouter();
   const sec = useRef<HTMLElement>(null);
   const track = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLElement>(null);
   const count = useRef<HTMLSpanElement>(null);
-  const galCanvas = useRef<HTMLDivElement>(null);
-  const gal = useRef<FieldHandle | null>(null);
   const names = useRef(new Map<string, FieldHandle>());
   const going = useRef(false);
   const total = projects.length;
@@ -71,7 +67,8 @@ export default function Gallery({
         panel.classList.add('on');
         names.current.get(panel.dataset.slug!)?.morph(sig);
       }
-      gal.current?.morph(sig);
+      if (panel) backdrop()?.morph(sig, panel.dataset.accent);
+      else restBackdrop();
       if (panel?.dataset.accent) root.style.setProperty('--acc', panel.dataset.accent);
       else root.style.removeProperty('--acc');
     };
@@ -191,14 +188,12 @@ export default function Gallery({
     router.prefetch(href);
     const title = document.getElementById(`gt-${p.slug}`);
     const word = title?.querySelector('a') ?? title;
-    const wrap = galCanvas.current?.querySelector('canvas');
-    const useGal = !!wrap && getComputedStyle(wrap).display !== 'none' && gal.current;
-    const field = useGal ? gal.current : names.current.get(p.slug);
-    const canvas = useGal ? wrap : title?.parentElement?.querySelector('canvas');
-    if (field && canvas && word) {
-      const t = word.getBoundingClientRect(), r = canvas.getBoundingClientRect();
-      field.morph(p.sig);
-      field.burst(t.left - r.left, t.top - r.top + t.height * 0.15, t.width, t.height * 0.7);
+    // The background canvas is fixed at the top left of the viewport, so client coordinates are its own.
+    const field = backdrop();
+    if (field && word) {
+      const t = word.getBoundingClientRect();
+      field.morph(p.sig, p.accent);
+      field.burst(t.left, t.top + t.height * 0.15, t.width, t.height * 0.7);
     }
     setTimeout(() => {
       morphTo(router, href, title).finished.finally(() => {
@@ -210,9 +205,6 @@ export default function Gallery({
   return (
     <section className="work" id="work" aria-labelledby="work-h" ref={sec}>
       <div className="pin">
-        <div ref={galCanvas} style={{ display: 'contents' }}>
-          <FieldCanvas className="gal-field" preset="gallery" accents={accents} onField={(f) => (gal.current = f)} />
-        </div>
         <div className="bar wrap small">
           <h2 id="work-h">Selected work</h2>
           <span ref={count}>Scroll down to move sideways</span>

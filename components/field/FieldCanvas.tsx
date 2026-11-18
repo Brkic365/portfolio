@@ -10,7 +10,7 @@ interface FieldCanvasProps extends FieldProps {
 }
 
 /**
- * A field on its own canvas: a full hero, a backdrop or a thin band. Purely
+ * A field on its own canvas, such as the hero behind its traced name. Purely
  * decorative, so it is hidden from assistive technology; any text it traces
  * is a real element elsewhere in the page.
  */

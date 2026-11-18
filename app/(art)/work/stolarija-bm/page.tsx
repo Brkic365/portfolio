@@ -59,7 +59,7 @@ export default function StolarijaPage() {
         />
       </section>
 
-      <Band accent={p.accent} sig={p.sig} />
+      <Band />
 
       <section className="sec wrap" aria-labelledby="job-h">
         <SectionHead id="job-h" title="The job" accent={p.accent} note="Built to order, so the site sells the work rather than listing stock." />

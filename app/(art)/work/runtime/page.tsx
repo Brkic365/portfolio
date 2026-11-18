@@ -79,7 +79,7 @@ export default function RuntimePage() {
         ratio="16 / 10"
       />
 
-      <Band accent={p.accent} sig={p.sig} />
+      <Band />
 
       <section className="sec wrap" aria-labelledby="brief-h">
         <SectionHead id="brief-h" title="Both ends" accent={p.accent} note="Treblle set the brief: build something useful for API monitoring." />

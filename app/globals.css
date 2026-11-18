@@ -33,9 +33,10 @@ html {
   color-scheme: dark;
 }
 
+/* No background on body: the ground is painted by html, so the background
+   field (z-index -1 in the root stacking context) sits between the two. */
 body {
   margin: 0;
-  background: var(--ink);
   color: var(--paper);
   font: 400 17px/1.55 var(--f);
   -webkit-font-smoothing: antialiased;
@@ -108,11 +109,69 @@ textarea:focus-visible {
 }
 
 /* ---------------------------------------------------------------------------
-   Knockouts and bands: the field, carried down the page
+   The background field
+
+   One fixed canvas, the size of the viewport, behind every page. 100lvh
+   rather than inset: 0, so a phone's address bar sliding in and out never
+   resizes it. Nothing above it may paint an opaque ground, or the field
+   would stop at that box's edge.
+   --------------------------------------------------------------------------- */
+
+.backdrop {
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100lvh;
+  display: block;
+  pointer-events: none;
+}
+
+/* Scrims: running text sits on a soft dark wash so it stays readable over
+   the field. A feathered rectangle (two crossed gradient masks), never a
+   hard panel, reaching a little past the text on every side. */
+:where(
+    .hero-lead, .hero-side, .case-lead, .meta, .sec-h p, .job p, .job .when, .about .txt,
+    .facts, .prose .txt, .prose .label, .step p, .pair p, .facts-row, .instruments span,
+    .shot figcaption, .p-text, .p-meta, .intro p, .more ul, .nextp .line, .contact p.k,
+    .contact .links, .colo, .contact-grid aside, .form, .crumb
+  ) {
+  position: relative;
+  isolation: isolate;
+}
+
+:where(
+    .hero-lead, .hero-side, .case-lead, .meta, .sec-h p, .job p, .job .when, .about .txt,
+    .facts, .prose .txt, .prose .label, .step p, .pair p, .facts-row, .instruments span,
+    .shot figcaption, .p-text, .p-meta, .intro p, .more ul, .nextp .line, .contact p.k,
+    .contact .links, .colo, .contact-grid aside, .form, .crumb
+  )::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -60px -80px;
+  background: rgba(14, 14, 16, 0.66);
+  pointer-events: none;
+  --feather: 76px;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent),
+    linear-gradient(to bottom, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent),
+    linear-gradient(to bottom, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent);
+  mask-composite: intersect;
+}
+
+/* ---------------------------------------------------------------------------
+   Knockouts
 
    A knockout is real text. Until its field has drawn (and always without
    JavaScript) it is solid; the field marks it data-ko="on" once the canvas
    behind it traces the same letters, and only then does the text go clear.
+   The canvas draws only inside the letters, so it has no edge of its own;
+   the overhang just leaves room for the pointer to bend trails into them.
    --------------------------------------------------------------------------- */
 
 .ko-wrap {
@@ -150,19 +209,9 @@ html[data-vt] .vt-title a {
   text-decoration: none;
 }
 
+/* A gap between sections, where the background field shows through. */
 .band {
-  position: relative;
   height: clamp(72px, 9vw, 132px);
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-}
-
-.band canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
 }
 
 /* ---------------------------------------------------------------------------
@@ -215,7 +264,6 @@ html[data-vt] .vt-title a {
   position: relative;
   height: 100svh;
   min-height: 560px;
-  background: var(--ink);
   color: var(--paper);
   overflow: hidden;
   container-type: size;
@@ -416,16 +464,6 @@ html[data-vt] .vt-title a {
   display: flex;
   will-change: transform;
   min-height: 0;
-}
-
-.gal-field {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  z-index: 0;
-  pointer-events: none;
 }
 
 .work .bar,
@@ -1514,8 +1552,7 @@ html[data-vt] .vt-title a {
     aspect-ratio: 16 / 10;
   }
 
-  .prog,
-  .gal-field {
+  .prog {
     display: none;
   }
 
