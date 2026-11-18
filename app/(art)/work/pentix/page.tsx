@@ -1,26 +1,29 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import Shot from '@/components/art/Shot';
-import { projectThemes, themeVars } from '@/data/projectThemes';
+import Band from '@/components/site/Band';
+import CaseStudy from '@/components/site/CaseStudy';
+import Facts from '@/components/site/Facts';
+import Frame from '@/components/site/Frame';
+import SectionHead from '@/components/site/SectionHead';
+import Steps from '@/components/site/Steps';
+import { getProject } from '@/data/projects';
+import { pageMetadata } from '@/lib/meta';
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: 'Pentix',
   description:
     'A World Cup wager app where pose estimation running in the browser counts your push-ups, built with Next.js, MediaPipe and Supabase.',
-  alternates: { canonical: '/work/pentix' },
-};
+  path: '/work/pentix',
+  card: 'pentix',
+  type: 'article',
+});
 
-const theme = projectThemes.pentix;
+const p = getProject('pentix');
 
 const steps: [string, string][] = [
   [
     'A goal is scored',
     'Match data turns into push-ups you owe, using a formula each group sets for itself.',
   ],
-  [
-    'The debt grows',
-    'Unpaid balances gain interest, so putting it off costs you.',
-  ],
+  ['The debt grows', 'Unpaid balances gain interest, so putting it off costs you.'],
   [
     'The camera settles it',
     'Pose tracking runs on your own phone and counts the set. The video never leaves the device.',
@@ -29,152 +32,77 @@ const steps: [string, string][] = [
 
 export default function PentixPage() {
   return (
-    <div className="art" data-theme="pentix" style={themeVars(theme)}>
-      <main>
-        <section className="art-pad pt-[20vh] pb-[10vh]">
-          <div className="art-mono mb-8" style={{ color: 'var(--accent)' }}>
-            Personal project, live at pentix.eu
-          </div>
-          <h1
-            className="art-display art-enter art-enter-2"
-            style={{ fontSize: 'clamp(3.5rem, 17vw, 18rem)', color: 'var(--ink)' }}
-          >
-            Pentix
-          </h1>
-          <div
-            className="mt-[6vh] flex flex-wrap items-end justify-between gap-8"
-            style={{ borderTop: '3px solid var(--accent)', paddingTop: '2rem' }}
-          >
-            <p
-              className="art-serif"
-              style={{
-                fontSize: 'clamp(1.2rem, 2.6vw, 2.1rem)',
-                lineHeight: 1.3,
-                color: 'var(--ink)',
-                maxWidth: '26ch',
-              }}
-            >
-              A bet with your friends that a camera keeps honest, instead of the
-              honour system.
+    <CaseStudy
+      project={p}
+      hero={{
+        title: 'Pentix',
+        k: 0.2461,
+        km: 0.2461,
+        lead: 'A bet with your friends that a camera keeps honest, instead of the honour system.',
+        role: 'Personal project, sole developer',
+      }}
+    >
+      <section className="sec wrap" style={{ paddingTop: 'clamp(40px, 6vw, 88px)' }} aria-labelledby="how-h">
+        <SectionHead id="how-h" title="How it works" accent={p.accent} note="Goals become push-ups. The camera keeps count." />
+        <Steps items={steps} />
+      </section>
+
+      <Frame
+        src={p.image}
+        alt="The Pentix leaderboard and match interface"
+        url={p.url}
+        href={`https://${p.url}/`}
+        lift
+        ratio="16 / 10"
+      />
+
+      <Band accent={p.accent} sig={p.sig} />
+
+      <section className="sec wrap" aria-labelledby="dev-h">
+        <SectionHead id="dev-h" title="On the device" accent={p.accent} note="A product decision before it was a technical one." />
+        <div className="prose">
+          <div />
+          <div className="txt">
+            <p className="big">
+              Running the model on the phone was a product decision before it was a technical one.
             </p>
-            <a
-              href="https://pentix.eu/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="art-mono"
-              style={{
-                background: 'var(--accent)',
-                color: 'var(--on-accent)',
-                padding: '0.9em 1.4em',
-              }}
-            >
-              Open the app
-            </a>
-          </div>
-        </section>
-
-        <section
-          className="art-pad py-[10vh] grid md:grid-cols-3 gap-x-10 gap-y-12"
-          style={{ borderTop: '1px solid var(--rule)' }}
-        >
-          {steps.map(([title, body], i) => (
-            <div key={title}>
-              <div
-                className="art-display mb-5"
-                style={{ fontSize: 'clamp(3rem, 7vw, 5.5rem)', color: 'var(--accent)' }}
-              >
-                {String(i + 1).padStart(2, '0')}
-              </div>
-              <h2
-                className="art-display mb-3"
-                style={{ fontSize: 'clamp(1.5rem, 2.6vw, 2.1rem)', color: 'var(--ink)' }}
-              >
-                {title}
-              </h2>
-              <p
-                className="art-serif"
-                style={{ fontSize: '1.05rem', lineHeight: 1.55, color: 'var(--ink-2)' }}
-              >
-                {body}
-              </p>
-            </div>
-          ))}
-        </section>
-
-        <section className="art-pad py-[9vh]">
-          <Shot
-            src="/projects/pentix.png"
-            alt="The Pentix leaderboard and match interface"
-            url="pentix.eu"
-            lift
-            ratio="16 / 10"
-            sizes="(max-width: 1024px) 92vw, 82vw"
-          />
-        </section>
-
-        <section className="art-pad py-[10vh] grid lg:grid-cols-[1fr_1fr] gap-10 lg:gap-20">
-          <div
-            className="art-serif"
-            style={{ fontSize: '1.2rem', lineHeight: 1.65, color: 'var(--ink-2)' }}
-          >
             <p>
-              Running the model on the phone was a product decision before it was
-              a technical one. Uploading video would have meant storage costs, a
-              moderation problem, and asking people to hand over footage of
-              themselves. Keeping it on the device removed all three.
-            </p>
-            <p style={{ marginTop: '1.2em' }}>
-              The hard part was deciding what counts as a rep. It comes down to
-              one number: how far your elbow has to bend before the app accepts
-              the push-up. Set it too loose and half reps count, which defeats
-              the point. Set it too strict and good reps get ignored, so people
-              end up doing more push-ups than they actually owe. Almost all of
-              the tuning went into that single threshold, and getting it wrong in
-              either direction makes people stop trusting the app.
+              Uploading video would have meant storage costs, a moderation problem, and asking people to
+              hand over footage of themselves. Keeping it on the device removed all three.
             </p>
           </div>
+        </div>
+      </section>
 
-          <dl className="grid grid-cols-2 gap-8 self-start">
-            {[
-              ['Built with', 'Next.js, MediaPipe, Supabase'],
-              ['Role', 'Sole developer'],
-              ['Live at', 'pentix.eu', 'https://pentix.eu/'],
-              ['Runs on', 'Your device, not a server'],
-            ].map(([k, v, href]) => (
-              <div key={k}>
-                <dt className="art-mono mb-2" style={{ color: 'var(--ink-3)' }}>
-                  {k}
-                </dt>
-                <dd className="art-serif" style={{ fontSize: '1.05rem', color: 'var(--ink)' }}>
-                  {href ? (
-                    <a href={href} target="_blank" rel="noopener noreferrer" className="art-link">
-                      {v}
-                    </a>
-                  ) : (
-                    v
-                  )}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </section>
+      <section className="sec flush wrap" aria-labelledby="rep-h">
+        <SectionHead id="rep-h" title="What counts as a rep" size="mid" />
+        <div className="prose">
+          <p className="label small">One threshold</p>
+          <div className="txt">
+            <p>
+              The hard part was deciding what counts as a rep. It comes down to one number: how far your
+              elbow has to bend before the app accepts the push-up. Set it too loose and half reps count,
+              which defeats the point. Set it too strict and good reps get ignored, so people end up
+              doing more push-ups than they actually owe.
+            </p>
+            <p className="big">
+              Almost all of the tuning went into that single threshold, and getting it wrong in either
+              direction makes people stop trusting the app.
+            </p>
+          </div>
+        </div>
+      </section>
 
-        <nav
-          className="art-pad py-[8vh] flex flex-wrap items-baseline justify-between gap-6"
-          style={{ borderTop: '1px solid var(--rule)' }}
-        >
-          <Link href="/" className="art-mono" style={{ color: 'var(--ink-3)' }}>
-            Back to index
-          </Link>
-          <Link
-            href="/work/shelf"
-            className="art-display"
-            style={{ fontSize: 'clamp(1.8rem, 5vw, 4rem)', color: 'var(--ink)' }}
-          >
-            Shelf
-          </Link>
-        </nav>
-      </main>
-    </div>
+      <section className="sec flush wrap" aria-label="Project facts">
+        <Facts
+          items={[
+            ['Built with', 'Next.js, MediaPipe, Supabase'],
+            ['Role', 'Sole developer'],
+            ['Live at', 'pentix.eu', 'https://pentix.eu/'],
+            ['Runs on', 'Your device, not a server'],
+          ]}
+        />
+      </section>
+    </CaseStudy>
   );
 }

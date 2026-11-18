@@ -1,16 +1,21 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
-import Shot from '@/components/art/Shot';
-import { projectThemes, themeVars } from '@/data/projectThemes';
+import CaseStudy from '@/components/site/CaseStudy';
+import Facts from '@/components/site/Facts';
+import Frame from '@/components/site/Frame';
+import SectionHead from '@/components/site/SectionHead';
+import { getProject } from '@/data/projects';
+import { pageMetadata } from '@/lib/meta';
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: 'Stocks Royale',
   description:
     'A college project: a trading game played against simulated market data, streamed over WebSockets from a Node and PostgreSQL backend.',
-  alternates: { canonical: '/work/stocks-royale' },
-};
+  path: '/work/stocks-royale',
+  card: 'stocks-royale',
+  type: 'article',
+});
 
-const theme = projectThemes['stocks-royale'];
+const p = getProject('stocks-royale');
 
 /**
  * Decorative candlestick series. Deterministic so the server output is stable.
@@ -41,155 +46,106 @@ export default function StocksRoyalePage() {
   const step = W / data.length;
 
   return (
-    <div className="art" data-theme="stocks-royale" style={themeVars(theme)}>
-      <main>
-        <section className="grid lg:grid-cols-[1.1fr_1fr] items-center min-h-[80vh] gap-10 lg:gap-0">
-          <div className="art-pad pt-[16vh] lg:pt-0 relative z-10">
-            <div className="art-mono mb-6" style={{ color: 'var(--accent)' }}>
-              College project
-            </div>
-            <h1
-              className="art-display art-enter art-enter-2"
-              style={{ fontSize: 'clamp(2.8rem, 9vw, 9rem)', color: 'var(--ink)' }}
-            >
-              Stocks
-              <br />
-              Royale
-            </h1>
-            <p
-              className="art-serif mt-8"
-              style={{
-                fontSize: 'clamp(1.05rem, 1.8vw, 1.4rem)',
-                color: 'var(--ink-2)',
-                maxWidth: '28ch',
-              }}
-            >
-              A trading demo where the market is simulated, not real.
-            </p>
-          </div>
-
-          {/* Shot keeps its own column and bleeds off the right edge.
-              Overlapping the headline would put type on top of type. */}
-          <div className="pl-5 sm:pl-8 lg:pl-0 pr-5 sm:pr-8 lg:pr-0 lg:-mr-[6%]">
-            <Shot
-              src="/projects/stocks-royale.png"
-              alt="Stocks Royale trading interface"
-              url="stocks-royale.vercel.app"
-              lift
-              priority
-              ratio="4 / 3"
-              sizes="(max-width: 1024px) 92vw, 52vw"
-            />
-          </div>
-        </section>
-
-        <section
-          className="w-full py-[6vh]"
-          style={{ borderTop: '1px solid var(--rule)', borderBottom: '1px solid var(--rule)' }}
-        >
-          <svg
-            viewBox={`0 0 ${W} ${H}`}
-            preserveAspectRatio="none"
-            role="img"
-            aria-label="Decorative candlestick chart"
-            style={{ width: '100%', height: 'clamp(160px, 26vh, 300px)', display: 'block' }}
-          >
-            {[0.25, 0.5, 0.75].map((g) => (
-              <line key={g} x1="0" x2={W} y1={H * g} y2={H * g} stroke="var(--rule)" strokeWidth="1" />
-            ))}
-            {data.map((c) => {
-              const x = c.i * step + step / 2;
-              const y = (v: number) => H - (v / 100) * H;
-              const col = c.up ? 'var(--accent)' : 'var(--ink-3)';
-              return (
-                <g key={c.i}>
-                  <line x1={x} x2={x} y1={y(c.high)} y2={y(c.low)} stroke={col} strokeWidth="1.5" />
-                  <rect
-                    x={x - step * 0.28}
-                    y={y(Math.max(c.open, c.close))}
-                    width={step * 0.56}
-                    height={Math.max(2, Math.abs(y(c.open) - y(c.close)))}
-                    fill={col}
-                  />
-                </g>
-              );
-            })}
-          </svg>
-        </section>
-
-        <section className="art-pad py-[10vh] grid lg:grid-cols-[1.4fr_1fr] gap-10 lg:gap-20">
-          <div
-            className="art-serif"
-            style={{ fontSize: '1.2rem', lineHeight: 1.65, color: 'var(--ink-2)' }}
-          >
-            <p>
-              Built for college. There is no real market behind it. A Node
-              backend generates the price movement, stores it in Postgres and
-              pushes updates to the browser over a socket, and the frontend
-              charts whatever arrives. The trading, the leaderboard and the
-              charts are all real code, the prices are not.
-            </p>
-            <p style={{ marginTop: '1.2em' }}>
-              Prices move faster than a chart wants to redraw, so most of the
-              work went into deciding how often to repaint without the numbers
-              going stale on screen.
-            </p>
-            <p
-              className="art-mono mt-8"
-              style={{
-                color: 'var(--accent)',
-                border: '1px solid var(--rule)',
-                padding: '1rem 1.2rem',
-                lineHeight: 1.7,
-              }}
-            >
-              Heads up: the backend is not always running, so the live demo may
-              load with no data.
-            </p>
-          </div>
-          <dl className="grid grid-cols-2 lg:grid-cols-1 gap-6 self-start">
-            {[
-              ['Frontend', 'Next.js, Lightweight Charts'],
-              ['Backend', 'Node, Express, PostgreSQL'],
-              ['Transport', 'Socket.io'],
-              ['Source', 'github.com/Brkic365/Stocks-Royale', 'https://github.com/Brkic365/Stocks-Royale'],
-            ].map(([k, v, href]) => (
-              <div key={k}>
-                <dt className="art-mono mb-1" style={{ color: 'var(--ink-3)' }}>
-                  {k}
-                </dt>
-                <dd className="art-serif" style={{ color: 'var(--ink)' }}>
-                  {href ? (
-                    <a href={href} target="_blank" rel="noopener noreferrer" className="art-link">
-                      {v}
-                    </a>
-                  ) : (
-                    v
-                  )}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-
-        <nav
-          className="art-pad py-[8vh] flex flex-wrap items-baseline justify-between gap-6"
-          style={{ borderTop: '1px solid var(--rule)' }}
-        >
-          <Link href="/" className="art-mono" style={{ color: 'var(--ink-3)' }}>
-            Back to index
-          </Link>
-          <a
-            href="https://stocks-royale.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="art-display"
-            style={{ fontSize: 'clamp(1.8rem, 5vw, 4rem)', color: 'var(--accent)' }}
-          >
-            Open it
+    <CaseStudy
+      project={p}
+      hero={{
+        title: (
+          <>
+            Stocks
+            <br className="mbr" /> Royale
+          </>
+        ),
+        k: 0.111,
+        km: 0.2264,
+        lead: 'A trading demo where the market is simulated, not real.',
+        role: 'College project',
+      }}
+      end={
+        <nav className="backrow wrap small" aria-label="More">
+          <Link href="/#work">&larr; Back to selected work</Link>
+          <a className="ul" href={`https://${p.url}/`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--paper)' }}>
+            Open it <span aria-hidden="true">↗</span>
           </a>
         </nav>
-      </main>
-    </div>
+      }
+    >
+      <Frame
+        src={p.image}
+        alt="Stocks Royale trading interface"
+        url={p.url}
+        href={`https://${p.url}/`}
+        lift
+        priority
+        ratio="16 / 10"
+        tight
+      />
+
+      <section className="diagram" aria-label="Candlestick chart">
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          preserveAspectRatio="none"
+          role="img"
+          aria-label="Decorative candlestick chart"
+          style={{ height: 'clamp(160px, 26vh, 300px)' }}
+        >
+          {[0.25, 0.5, 0.75].map((g) => (
+            <line key={g} x1="0" x2={W} y1={H * g} y2={H * g} stroke="rgba(237,236,230,.14)" strokeWidth="1" />
+          ))}
+          {data.map((c) => {
+            const x = c.i * step + step / 2;
+            const y = (v: number) => H - (v / 100) * H;
+            const col = c.up ? 'var(--acc)' : 'var(--ash)';
+            return (
+              <g key={c.i}>
+                <line x1={x} x2={x} y1={y(c.high)} y2={y(c.low)} stroke={col} strokeWidth="1.5" />
+                <rect
+                  x={x - step * 0.28}
+                  y={y(Math.max(c.open, c.close))}
+                  width={step * 0.56}
+                  height={Math.max(2, Math.abs(y(c.open) - y(c.close)))}
+                  fill={col}
+                />
+              </g>
+            );
+          })}
+        </svg>
+      </section>
+
+      <section className="sec wrap" aria-labelledby="sim-h">
+        <SectionHead id="sim-h" title="Simulated" accent={p.accent} note="There is no real market behind it." />
+        <div className="prose">
+          <div />
+          <div className="txt">
+            <p className="big">
+              Built for college. There is no real market behind it.
+            </p>
+            <p>
+              A Node backend generates the price movement, stores it in Postgres and pushes updates to
+              the browser over a socket, and the frontend charts whatever arrives. The trading, the
+              leaderboard and the charts are all real code, the prices are not.
+            </p>
+            <p>
+              Prices move faster than a chart wants to redraw, so most of the work went into deciding
+              how often to repaint without the numbers going stale on screen.
+            </p>
+            <p className="note small">
+              <b>Heads up:</b> the backend is not always running, so the live demo may load with no
+              data.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="sec flush wrap" aria-label="Project facts">
+        <Facts
+          items={[
+            ['Frontend', 'Next.js, Lightweight Charts'],
+            ['Backend', 'Node, Express, PostgreSQL'],
+            ['Transport', 'Socket.io'],
+            ['Source', 'github.com/Brkic365/Stocks-Royale', 'https://github.com/Brkic365/Stocks-Royale'],
+          ]}
+        />
+      </section>
+    </CaseStudy>
   );
 }

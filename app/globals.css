@@ -1,390 +1,1634 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-jetbrains-mono);
-}
-
-* {
-  margin: 0;
-  box-sizing: border-box;
-}
-
-/* Padding is left to Tailwind on purpose. */
-
-body {
-  font-family: var(--font-inter), system-ui, sans-serif;
-  overflow-x: hidden;
-  min-height: 100vh;
+  --font-sans: var(--font-archivo);
 }
 
 /* ---------------------------------------------------------------------------
-   Art direction
+   Field
 
-   The index is deliberately quiet and follows the system colour scheme. Each
-   project page overrides these same variables inline and commits to a single
-   palette, which is why themed pages opt out of prefers-color-scheme.
+   One dark ground, one family (Archivo, variable width), and an accent that
+   each case study swaps for its project's own. Display type runs expanded at
+   125%; everything else sits at 100%.
    --------------------------------------------------------------------------- */
 
-.art {
-  --bg: #f4f2ee;
-  --ink: #14130f;
-  --ink-2: #5c584f;
-  /* Tuned to clear 4.5:1 against --bg. This carries real label text. */
-  --ink-3: #6f6a5e;
-  --rule: #d8d3c8;
-  --accent: #14130f;
-  --on-accent: #f4f2ee;
-
-  background: var(--bg);
-  color: var(--ink);
-  min-height: 100vh;
-  font-family: var(--font-inter), system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: clip;
+:root {
+  --ink: #0e0e10;
+  --paper: #edece6;
+  --dim: #b9b8b1;
+  /* Clears 4.5:1 against --ink. It carries real label text. */
+  --ash: #8d8c86;
+  --line: rgba(237, 236, 230, 0.14);
+  --rule: rgba(237, 236, 230, 0.42);
+  --hot: #ff5a1f;
+  --acc: var(--hot);
+  --f: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --gut: clamp(16px, 3vw, 44px);
 }
 
-@media (prefers-color-scheme: dark) {
-  .art:not([data-theme]) {
-    --bg: #100f0d;
-    --ink: #f2efe7;
-    --ink-2: #aaa598;
-    --ink-3: #8d887b;
-    --rule: #2e2b25;
-    --accent: #f2efe7;
-    --on-accent: #100f0d;
+html {
+  -webkit-text-size-adjust: 100%;
+  overflow-x: clip;
+  background: var(--ink);
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font: 400 17px/1.55 var(--f);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* Tailwind's preflight strips link underlines; the design wants them back by
+   default, with the accent as the underline colour. Navigation and big type
+   links opt out explicitly. */
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--rule);
+}
+
+.hero-side .acts a,
+.contact .links a,
+.frame .chrome .url,
+.p-text dd a,
+.meta a,
+.facts-row dd a,
+.job .org a,
+.contact-grid aside a,
+.ul {
+  text-decoration-color: var(--acc);
+  text-decoration-thickness: 2px;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 4px;
+}
+
+::selection {
+  background: var(--acc);
+  color: var(--ink);
+}
+
+.wrap {
+  padding-left: var(--gut);
+  padding-right: var(--gut);
+}
+
+.small {
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.disp {
+  font-stretch: 125%;
+  font-weight: 850;
+  letter-spacing: -0.02em;
+  line-height: 0.92;
+}
+
+.ul {
+  text-underline-offset: 4px;
+  text-decoration-color: var(--acc);
+  text-decoration-thickness: 2px;
+}
+
+/* A project page sets its accent on this wrapper, replacing the orange. */
+.field-page {
+  --acc: var(--page-acc, var(--hot));
+}
+
+/* ---------------------------------------------------------------------------
+   Knockouts and bands: the field, carried down the page
+
+   A knockout is real text. Until its field has drawn (and always without
+   JavaScript) it is solid; the field marks it data-ko="on" once the canvas
+   behind it traces the same letters, and only then does the text go clear.
+   --------------------------------------------------------------------------- */
+
+.ko-wrap {
+  position: relative;
+}
+
+.ko-wrap > canvas {
+  position: absolute;
+  z-index: 0;
+  top: -28px;
+  left: calc(-1 * var(--gut));
+  width: calc(100% + 2 * var(--gut));
+  height: calc(100% + 56px);
+  pointer-events: none;
+}
+
+.ko {
+  position: relative;
+  z-index: 1;
+  transition: color 0.35s ease;
+}
+
+.ko[data-ko="on"] {
+  color: transparent;
+}
+
+/* During a page transition the moving title is captured as solid type, since a
+   transparent knockout would snapshot as nothing. */
+html[data-vt] .vt-title[data-ko="on"] {
+  color: var(--paper);
+  transition: none;
+}
+
+html[data-vt] .vt-title a {
+  text-decoration: none;
+}
+
+.band {
+  position: relative;
+  height: clamp(72px, 9vw, 132px);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.band canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ---------------------------------------------------------------------------
+   Navigation
+   --------------------------------------------------------------------------- */
+
+.top {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px;
+  padding-top: 20px;
+}
+
+.top .me {
+  font-weight: 700;
+  text-decoration: none;
+  font-stretch: 112.5%;
+}
+
+.top nav {
+  display: flex;
+  gap: clamp(12px, 2vw, 28px);
+}
+
+.top nav a {
+  text-decoration: none;
+  color: var(--dim);
+}
+
+.top nav a:hover,
+.top nav a[aria-current] {
+  color: var(--paper);
+}
+
+/* ---------------------------------------------------------------------------
+   Homepage hero
+
+   The name is a real h1, sized to the hero with container units so it spans
+   the width at any size, and drawn genuinely expanded (font-stretch 125%).
+   --name-k is 1 / the width of "Antonio" in em at that stretch and weight.
+   --------------------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  height: 100svh;
+  min-height: 560px;
+  background: var(--ink);
+  color: var(--paper);
+  overflow: hidden;
+  container-type: size;
+}
+
+.hero > canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero-name {
+  --name-k: 0.2041;
+  --name-km: 0.3057;
+  position: absolute;
+  z-index: 1;
+  left: var(--gut);
+  top: 12cqh;
+  margin: 0 0 0 -0.03em;
+  font-weight: 900;
+  font-stretch: 125%;
+  letter-spacing: -0.02em;
+  line-height: 0.86;
+  white-space: nowrap;
+  font-size: min(calc((100cqw - 2 * var(--gut)) * var(--name-k)), 37cqh);
+}
+
+.hero-name .mbr {
+  display: none;
+}
+
+.hero-foot {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: 24px;
+  align-items: end;
+  padding-bottom: clamp(20px, 4vh, 40px);
+  pointer-events: none;
+}
+
+.hero-foot a {
+  pointer-events: auto;
+}
+
+.hero-lead {
+  font-size: clamp(26px, 3vw, 46px);
+  line-height: 1.04;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  max-width: 18ch;
+}
+
+.hero-side {
+  justify-self: end;
+  text-align: right;
+  max-width: 44ch;
+  color: var(--dim);
+}
+
+.hero-side > p:first-child {
+  color: var(--paper);
+}
+
+.hero-side .acts {
+  display: flex;
+  gap: 18px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.hero-side .acts a {
+  color: var(--paper);
+  text-underline-offset: 4px;
+  text-decoration-color: var(--hot);
+  text-decoration-thickness: 2px;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.legend i {
+  display: inline-block;
+  width: 22px;
+  height: 2px;
+  background: var(--hot);
+}
+
+.legend .coarse {
+  display: none;
+}
+
+@media (hover: none) {
+  .legend .fine {
+    display: none;
+  }
+
+  .legend .coarse {
+    display: inline;
   }
 }
 
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+.act {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 6px;
+  color: var(--ash);
+  font-variant-numeric: tabular-nums;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--rule, rgba(128, 128, 128, 0.4));
-  border-radius: 5px;
-}
-
-/* Horizontal rhythm. Sections run full width; only text is inset. */
-.art-pad {
-  padding-inline: clamp(1.25rem, 5vw, 5.5rem);
-}
-
-.art-display {
-  font-family: var(--font-instrument), Georgia, serif;
-  font-weight: 400;
-  line-height: 0.92;
-  letter-spacing: -0.02em;
-}
-
-.art-serif {
-  font-family: var(--font-newsreader), Georgia, serif;
-}
-
-.art-mono {
-  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-/* Oversized index numeral used as a graphic element, not as information.
-   Marked aria-hidden in the markup since it is outline-only. */
-.art-numeral {
-  font-family: var(--font-instrument), Georgia, serif;
-  line-height: 0.75;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--rule);
-  user-select: none;
-}
-
-.art-link {
-  color: inherit;
-  text-decoration: none;
-  box-shadow: inset 0 -1px 0 currentColor;
-  transition: opacity 0.15s ease;
-}
-
-.art-link:hover {
-  opacity: 0.6;
-}
-
-/* Whole project rows are links, so keyboard users need a visible target. */
-.art a:focus-visible,
-.art button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 2px;
+.act b {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--hot);
+  box-shadow: 0 0 0 3px rgba(255, 90, 31, 0.18);
 }
 
 /* ---------------------------------------------------------------------------
-   Screenshots
+   Gallery: a sticky horizontal track driven by vertical scroll
 
-   Never full width, and never behind page text. A UI screenshot carries its
-   own headlines; stacking the site's typography on top puts two type systems
-   in one space and both lose. Framing it reads as a quoted object, and halving
-   the display width means the ~2330px sources downscale instead of upscaling,
-   which is what "low resolution" actually was.
+   Below 820px it is an ordinary vertical list. The pin clips with
+   overflow: clip rather than hidden, because a hidden box is still
+   scrollable by focus, and tabbing into a panel would shift the track out
+   from under the scroll-driven transform.
    --------------------------------------------------------------------------- */
 
-.art-band {
-  width: 100%;
+@property --acc {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #ff5a1f;
 }
 
-.art-shot {
+.work {
   position: relative;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid var(--rule);
-  background: color-mix(in srgb, var(--ink) 4%, var(--bg));
-  box-shadow: 0 34px 70px -34px rgba(0, 0, 0, 0.5);
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  border-top: 1px solid var(--line);
+  transition: --acc 0.6s;
 }
 
-.art-band:hover .art-shot,
-.art a:focus-visible .art-shot {
-  transform: translateY(-6px);
-}
-
-/* Minimal window chrome. Signals "this is a product", and gives the
-   screenshot's own text an obvious container to belong to. */
-.art-shot-bar {
+.work .pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: clip;
   display: flex;
-  align-items: center;
-  gap: 6px;
-  height: 34px;
-  padding: 0 12px;
-  border-bottom: 1px solid var(--rule);
+  flex-direction: column;
 }
 
-.art-shot-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--rule);
-  flex: none;
+.work .bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px;
+  padding-top: 22px;
+  padding-bottom: 14px;
 }
 
-.art-shot-url {
-  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
-  font-size: 0.625rem;
-  color: var(--ink-3);
-  margin-left: 8px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.work .bar h2 {
+  font-size: 15px;
+  font-weight: 700;
+  font-stretch: 112.5%;
+}
+
+.work .bar span {
+  color: var(--dim);
+}
+
+.prog {
+  height: 2px;
+  background: var(--line);
+  margin: 0 var(--gut);
+  position: relative;
+}
+
+.prog i {
+  position: absolute;
+  inset: 0;
+  background: var(--acc);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+}
+
+.track {
+  flex: 1;
+  display: flex;
+  will-change: transform;
+  min-height: 0;
+}
+
+.gal-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.work .bar,
+.work .prog,
+.track {
+  position: relative;
+  z-index: 1;
+}
+
+.panel {
+  flex: 0 0 auto;
+  width: min(86vw, 1180px);
+  height: 100%;
+  padding: clamp(20px, 4vh, 44px) var(--gut) clamp(20px, 4vh, 40px);
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: clamp(14px, 2.4vh, 26px);
+  border-right: 1px solid var(--line);
+}
+
+.panel.intro {
+  width: min(56vw, 720px);
+  align-content: end;
+  grid-template-rows: auto auto;
+}
+
+.intro h3 {
+  font-size: clamp(48px, 6.4vw, 104px);
+}
+
+.intro p {
+  max-width: 30ch;
+  font-size: 19px;
+  color: var(--dim);
+}
+
+.p-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  color: var(--ash);
+}
+
+.p-meta b {
+  color: var(--hot);
+  font-weight: 600;
+  transition: color 0.6s;
+}
+
+.panel.on .p-meta b {
+  color: var(--acc);
+}
+
+.name-wrap > canvas {
+  top: -22px;
+  height: calc(100% + 44px);
+}
+
+.p-name {
+  font-size: clamp(48px, 7.6vw, 128px);
   white-space: nowrap;
 }
 
-.art-shot-media {
-  position: relative;
-  width: 100%;
+.p-name a {
+  text-decoration: none;
+  color: inherit;
 }
 
-.art-shot-media img {
+.p-name a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.1em;
+  text-decoration-color: var(--acc);
+}
+
+.p-name[data-ko="on"] a:hover {
+  text-decoration-color: rgba(237, 236, 230, 0.5);
+}
+
+.p-body {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(16px, 2.4vh, 28px);
+  min-height: 0;
+}
+
+.p-body figure {
+  position: relative;
+  min-height: 0;
+  height: 100%;
+  order: 2;
+  margin: 0;
+}
+
+.p-body figure a {
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+
+.p-body figure img {
   object-fit: cover;
   object-position: top center;
-  filter: saturate(0.88);
+  border: 1px solid var(--rule);
+  background: var(--ink);
 }
 
-/* Very dark screenshots get a gentle shadow lift. Kept mild on purpose: a
-   steeper curve amplifies the compression noise sitting in the near-black
-   areas, which is what made these look grainy and over-coloured. Desaturating
-   before the lift stops the gamma pushing colour casts around. */
-.art-shot.art-lift .art-shot-media img {
-  filter: saturate(0.7) url(#art-lift);
+.p-text {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 40px;
+  align-items: start;
+}
+
+.p-text .line {
+  font-size: clamp(20px, 1.8vw, 28px);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.p-text dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 16px;
+  margin: 0;
+  font-size: 15px;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.p-text dt {
+  color: var(--ash);
+}
+
+.p-text dd {
+  margin: 0;
+}
+
+.p-text dd a {
+  text-underline-offset: 4px;
+  text-decoration-color: var(--acc);
 }
 
 /* ---------------------------------------------------------------------------
-   More work
-
-   A marquee rather than a second full list, so the smaller projects look like
-   they belong without competing with the seven above. The track holds the set
-   twice and slides by exactly one copy, which loops seamlessly.
-
-   It pauses on hover and on focus-within, because you cannot click a moving
-   target and a keyboard user needs it to stop when they tab into it. Under
-   prefers-reduced-motion the animation is dropped entirely and the strip goes
-   back to being scrolled by hand.
+   Sections
    --------------------------------------------------------------------------- */
 
-.art-marquee {
-  position: relative;
-  overflow: hidden;
-  /* Faded edges, so cards enter and leave rather than being cut off. */
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+.sec {
+  padding-top: clamp(56px, 8vw, 120px);
+  padding-bottom: clamp(64px, 10vw, 140px);
 }
 
-.art-marquee-track {
+.sec.flush {
+  padding-top: 0;
+}
+
+.sec-h {
+  display: grid;
+  grid-template-columns: 3fr 9fr;
+  gap: 18px 24px;
+  margin-bottom: clamp(36px, 5vw, 72px);
+}
+
+.sec-h .ko-wrap,
+.sec-h > h2 {
+  grid-column: 1 / -1;
+}
+
+.sec-h h2 {
+  font-size: clamp(46px, 11.4vw, 176px);
+}
+
+.sec-h h2.mid {
+  font-size: clamp(40px, 6vw, 96px);
+}
+
+.sec-h p {
+  grid-column: 2;
+  color: var(--ash);
+}
+
+.sec-h p b {
+  color: var(--paper);
+  font-weight: 700;
+  font-stretch: 112.5%;
+}
+
+.job {
+  display: grid;
+  grid-template-columns: 3fr 4fr 5fr;
+  gap: 24px;
+  padding: 26px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.job:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.job .when {
+  color: var(--ash);
+  font-variant-numeric: tabular-nums;
+}
+
+.job h3 {
+  font-size: clamp(22px, 2.2vw, 32px);
+  line-height: 1.05;
+  font-weight: 750;
+  font-stretch: 112.5%;
+  letter-spacing: -0.015em;
+}
+
+.job .org {
+  margin-top: 6px;
+  color: var(--hot);
+  font-weight: 600;
+}
+
+.job .org a {
+  text-underline-offset: 4px;
+}
+
+.job p {
+  max-width: 54ch;
+  color: var(--dim);
+}
+
+.about {
+  display: grid;
+  grid-template-columns: 3fr 9fr;
+  gap: 24px;
+}
+
+.about figure {
+  width: 140px;
+  margin: 0;
+}
+
+.about figure img {
+  filter: grayscale(1) contrast(1.05);
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+}
+
+.about figcaption {
+  margin-top: 8px;
+  color: var(--ash);
+}
+
+.about .txt p {
+  font-size: clamp(19px, 1.6vw, 24px);
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  max-width: 40ch;
+  color: var(--dim);
+}
+
+.about .txt p.big {
+  font-size: clamp(22px, 2.3vw, 34px);
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  max-width: 30ch;
+  color: var(--paper);
+}
+
+.about .txt p + p {
+  margin-top: 0.8em;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  margin: 44px 0 0;
+  max-width: 1000px;
+  color: var(--dim);
+}
+
+.facts dt {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--paper);
+}
+
+.facts dd {
+  margin: 0;
+}
+
+.more ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 32px;
+}
+
+.more li {
+  border-top: 1px solid var(--line);
+}
+
+.more li a {
+  display: block;
+  padding: 14px 0;
+  text-decoration: none;
+}
+
+.more li b {
+  display: block;
+  font-weight: 700;
+  font-stretch: 112.5%;
+}
+
+.more li span {
+  color: var(--ash);
+  font-size: 15px;
+}
+
+.more li a:hover b {
+  text-decoration: underline;
+  text-decoration-color: var(--acc);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.more li .ext {
+  color: var(--ash);
+  font-weight: 500;
+}
+
+/* ---------------------------------------------------------------------------
+   Contact footer: the email as a field knockout
+   --------------------------------------------------------------------------- */
+
+.contact {
+  padding-top: clamp(56px, 8vw, 120px);
+  padding-bottom: 28px;
+}
+
+.contact p.k {
+  font-size: clamp(22px, 2.2vw, 32px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  max-width: 24ch;
+  line-height: 1.3;
+}
+
+.contact .mail-wrap {
+  margin-top: clamp(20px, 3vw, 36px);
+}
+
+.contact .mail {
+  display: inline-block;
+  font-size: clamp(30px, 6vw, 112px);
+  text-decoration: none;
+  font-stretch: 112.5%;
+  line-height: 1;
+}
+
+.contact .mail .mbr {
+  display: none;
+}
+
+.contact .mail:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 0.05em;
+  text-underline-offset: 0.12em;
+  text-decoration-color: var(--acc);
+}
+
+.contact .links {
   display: flex;
-  gap: 3rem;
-  width: max-content;
-  will-change: transform;
+  flex-wrap: wrap;
+  gap: 14px 36px;
+  margin-top: clamp(40px, 5vw, 64px);
+  padding-top: 18px;
+  border-top: 2px solid var(--acc);
+  font-weight: 600;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .art-marquee-track {
-    animation: art-marquee 60s linear infinite;
-  }
-
-  .art-marquee:hover .art-marquee-track,
-  .art-marquee:focus-within .art-marquee-track {
-    animation-play-state: paused;
-  }
+.contact .links a {
+  text-underline-offset: 4px;
 }
 
-/* Half the track is one full copy of the set. Half a gap comes off too, or
-   the seam shows as a double gap on every loop. */
-@keyframes art-marquee {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(calc(-50% - 1.5rem));
-  }
+.colo {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 80px;
+  color: var(--ash);
 }
 
-/* No animation to pause, so let people push it along themselves. */
-@media (prefers-reduced-motion: reduce) {
-  .art-marquee {
-    overflow-x: auto;
-  }
+/* ---------------------------------------------------------------------------
+   Case study
+   --------------------------------------------------------------------------- */
 
-  .art-marquee-track {
-    animation: none !important;
-  }
+.hero.case {
+  height: 78svh;
+  max-height: 880px;
 }
 
-.art-mini {
-  width: 17rem;
+/* The project name is real text sized to the hero; the field fills it as a
+   knockout. --k is 1 / the title's width in em, set per project, so every name
+   spans the hero whatever its length. --km and the .mbr breaks do the same
+   on narrow screens. */
+.hero-t {
+  position: absolute;
+  z-index: 1;
+  left: var(--gut);
+  top: 17cqh;
+  margin: 0 0 0 -0.03em;
+  font-size: min(calc((100cqw - 2 * var(--gut)) * var(--k)), 46cqh);
+  font-weight: 900;
+  font-stretch: 125%;
+  letter-spacing: -0.02em;
+  line-height: 0.86;
+  white-space: nowrap;
+}
+
+.hero-t .mbr {
+  display: none;
+}
+
+.crumb {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  top: clamp(64px, 11vh, 96px);
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  color: var(--dim);
+}
+
+.crumb a {
+  text-decoration: none;
+}
+
+.crumb a:hover {
+  color: var(--paper);
+}
+
+.crumb b {
+  color: var(--acc);
+  font-weight: 600;
+}
+
+.case .hero-foot {
+  display: block;
+  padding-bottom: clamp(22px, 4vh, 40px);
+  pointer-events: auto;
+}
+
+.case-lead {
+  font-size: clamp(24px, 2.6vw, 40px);
+  line-height: 1.06;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  max-width: 24ch;
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: repeat(3, auto) 1fr;
+  gap: 14px clamp(28px, 4vw, 64px);
+  margin: clamp(18px, 3vh, 30px) 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.meta dt {
+  color: var(--ash);
+  margin-bottom: 2px;
+}
+
+.meta dd {
+  margin: 0;
+}
+
+.meta a {
+  text-underline-offset: 4px;
+  text-decoration-color: var(--acc);
+  text-decoration-thickness: 2px;
+}
+
+/* Screenshots: framed in window chrome, never full-bleed, never behind text. */
+.shot {
+  padding-top: clamp(8px, 1vw, 16px);
+  padding-bottom: clamp(64px, 9vw, 128px);
+}
+
+.shot.tight {
+  padding-bottom: clamp(40px, 6vw, 80px);
+}
+
+.shot figure {
+  margin: 0;
+}
+
+.frame {
+  border: 1px solid var(--rule);
+  background: #18181b;
+}
+
+.frame .chrome {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  background: #18181b;
+  border-bottom: 1px solid var(--rule);
+  color: var(--dim);
+  min-width: 0;
+}
+
+.frame .dots {
+  display: flex;
+  gap: 6px;
   flex: none;
 }
 
-.art-mini-media {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  border: 1px solid var(--rule);
-  border-radius: 8px;
+.frame .dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3d3d42;
+  display: block;
+}
+
+.frame .chrome .url {
+  margin-left: auto;
+  color: var(--paper);
+  text-underline-offset: 4px;
+  text-decoration-color: var(--acc);
   overflow: hidden;
-  background: color-mix(in srgb, var(--ink) 4%, var(--bg));
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
-.art-mini:hover .art-mini-media,
-.art-marquee a:focus-visible .art-mini-media {
-  transform: translateY(-4px);
+.frame .img {
+  position: relative;
+  overflow: hidden;
 }
 
-.art-mini-media img {
+.frame .img img {
   object-fit: cover;
   object-position: top center;
-  filter: saturate(0.88);
 }
 
-.art-mini-media.art-lift img {
-  filter: saturate(0.7) url(#art-lift);
+/* Very dark screenshots get a gentle shadow lift. Kept mild on purpose: a
+   steeper curve amplifies the compression noise in the near-black areas.
+   Desaturating first stops the gamma pushing colour casts around. */
+.lift img {
+  filter: saturate(0.8) url(#field-lift);
 }
 
-/* No capture for this one, so the card carries the name as type instead. */
-.art-mini-blank {
-  display: flex;
-  align-items: flex-end;
-  padding: 1rem;
+.shot figcaption {
+  display: grid;
+  grid-template-columns: 3fr 9fr;
+  gap: 24px;
+  margin-top: 16px;
+  color: var(--ash);
 }
 
-/* Portrait. Framed like the screenshots so it reads as part of the same
-   family, and desaturated by about the same amount so a photograph does not
-   shout next to the muted captures. For a colder, more editorial look, take
-   saturate() to 0. */
-.art-portrait {
-  position: relative;
+.shot figcaption span:last-child {
+  color: var(--dim);
+}
+
+/* Long-form copy, set large like the prototype's problem statements. */
+.prose {
+  display: grid;
+  grid-template-columns: 3fr 9fr;
+  gap: 24px;
+}
+
+.prose .txt p {
+  font-size: clamp(19px, 1.6vw, 24px);
+  line-height: 1.45;
+  max-width: 44ch;
+  color: var(--dim);
+}
+
+.prose .txt p.big {
+  font-size: clamp(22px, 2.3vw, 34px);
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  max-width: 30ch;
+  color: var(--paper);
+}
+
+.prose .txt p + p {
+  margin-top: 0.8em;
+}
+
+.prose .txt code {
+  font-family: inherit;
+  font-stretch: 112.5%;
+  font-weight: 650;
+  color: var(--paper);
+}
+
+.prose .label {
+  color: var(--ash);
+  padding-top: 0.5em;
+}
+
+.note {
+  margin-top: 36px;
+  padding: 14px 18px 15px;
+  border: 1px solid var(--acc);
+  color: var(--paper);
+  max-width: 62ch;
+}
+
+.note b {
+  color: var(--acc);
+  font-weight: 700;
+}
+
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 3fr 4fr 5fr;
+  gap: 24px;
+  align-items: start;
+  padding: clamp(22px, 3vw, 36px) 0;
+  border-top: 1px solid var(--rule);
+}
+
+.step:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.step .n {
+  font-size: clamp(88px, 13vw, 210px);
+  line-height: 0.78;
+  color: var(--acc);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.05em;
+}
+
+.step h3 {
+  font-size: clamp(26px, 3vw, 46px);
+  line-height: 1;
+  font-weight: 800;
+  font-stretch: 125%;
+  letter-spacing: -0.02em;
+}
+
+.step p {
+  font-size: clamp(17px, 1.4vw, 21px);
+  max-width: 40ch;
+  padding-top: 0.2em;
+  color: var(--dim);
+}
+
+/* Pairs: two parallel blocks, e.g. Vectra XR's verticals, Shelf's two questions. */
+.pairs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 clamp(24px, 4vw, 56px);
+}
+
+.pair {
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+}
+
+.pair .k {
+  color: var(--acc);
+  font-weight: 600;
+}
+
+.pair h3 {
+  margin-top: 10px;
+  font-size: clamp(26px, 2.8vw, 42px);
+  font-weight: 850;
+  font-stretch: 125%;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.pair p {
+  margin-top: 16px;
+  color: var(--dim);
+  font-size: clamp(17px, 1.3vw, 19px);
+  max-width: 46ch;
+}
+
+.pair .go {
+  display: inline-block;
+  margin-top: 16px;
+  font-weight: 600;
+}
+
+/* Facts: a ruled row of short label/value pairs. */
+.facts-row {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr));
+  gap: 22px 32px;
+  margin: 0;
+}
+
+.facts-row > div {
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+
+.facts-row dt {
+  color: var(--acc);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.facts-row dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: clamp(18px, 1.5vw, 22px);
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.facts-row dd a {
+  text-underline-offset: 4px;
+  text-decoration-color: var(--acc);
+  text-decoration-thickness: 2px;
+}
+
+/* Diagrams drawn from code: RouteMaster's network, Runtime's instruments,
+   Stocks Royale's candles. Full-bleed between hairlines. */
+.diagram {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.diagram svg {
+  display: block;
   width: 100%;
-  max-width: 17rem;
-  aspect-ratio: 4 / 5;
-  border: 1px solid var(--rule);
-  border-radius: 10px;
-  overflow: hidden;
-  background: color-mix(in srgb, var(--ink) 4%, var(--bg));
-  box-shadow: 0 24px 50px -30px rgba(0, 0, 0, 0.45);
 }
 
-.art-portrait img {
+.diagram .legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 32px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--ash);
+  font-variant-numeric: tabular-nums;
+}
+
+.diagram .legend-row b {
+  color: var(--acc);
+  font-weight: 600;
+}
+
+.instruments {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.instruments > div {
+  padding: clamp(18px, 2.4vw, 32px) var(--gut);
+}
+
+.instruments > div + div {
+  border-left: 1px solid var(--line);
+}
+
+.instruments b {
+  display: block;
+  font-weight: 700;
+  font-stretch: 112.5%;
+}
+
+.instruments span {
+  display: block;
+  color: var(--ash);
+  margin-bottom: 18px;
+}
+
+/* Next project */
+.nextp {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: clamp(24px, 4vw, 56px);
+  align-items: end;
+  text-decoration: none;
+  padding-top: clamp(40px, 6vw, 80px);
+  padding-bottom: clamp(56px, 8vw, 110px);
+}
+
+.nextp .k {
+  color: var(--ash);
+}
+
+.nextp .name {
+  display: block;
+  font-size: clamp(44px, 8.4vw, 140px);
+  margin-top: 10px;
+  transition: color 0.2s;
+}
+
+.nextp .name .arr {
+  display: inline-block;
+  transition: transform 0.25s;
+}
+
+.nextp .line {
+  display: block;
+  margin-top: 16px;
+  font-size: clamp(19px, 1.7vw, 24px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--dim);
+}
+
+.nextp figure {
+  position: relative;
+  border: 1px solid var(--rule);
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  margin: 0;
+}
+
+.nextp img {
   object-fit: cover;
-  /* Source is square; a 4:5 frame crops the sides, so only the horizontal
-     matters. Centre keeps the face where it is. */
-  object-position: center;
-  filter: saturate(0.85) contrast(1.02);
+  object-position: top center;
+  transition: transform 0.5s;
+}
+
+.nextp:hover .name,
+.nextp:focus-visible .name {
+  color: var(--acc);
+}
+
+.nextp:hover .arr {
+  transform: translateX(0.12em);
+}
+
+.nextp:hover img {
+  transform: scale(1.025);
+}
+
+.backrow {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--dim);
+}
+
+.backrow a {
+  text-decoration: none;
+}
+
+.backrow a:hover {
+  color: var(--paper);
 }
 
 /* ---------------------------------------------------------------------------
-   Motion
-
-   Scroll-driven, so it costs no client JavaScript and cannot fall out of sync
-   with the scroll position. Gated twice: behind @supports, so browsers without
-   scroll timelines render the final state, and behind prefers-reduced-motion.
-   The global reduce rule at the bottom does not cover these, because
-   timeline-driven animations ignore animation-duration, which is why the media
-   query is repeated here.
+   Contact page
    --------------------------------------------------------------------------- */
 
-@keyframes art-rise {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
+.hero.contact-hero {
+  height: auto;
+  min-height: 0;
+  container-type: inline-size;
+  padding-top: clamp(96px, 16vh, 150px);
+  padding-bottom: clamp(32px, 5vw, 64px);
+}
+
+.contact-hero .ko-wrap {
+  z-index: 1;
+}
+
+.contact-hero h1 {
+  font-size: min(calc(100cqw * 0.1319), 220px);
+  font-weight: 900;
+  font-stretch: 125%;
+  letter-spacing: -0.02em;
+  line-height: 0.86;
+  white-space: nowrap;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 3fr 9fr;
+  gap: 24px;
+  padding-bottom: clamp(64px, 9vw, 128px);
+}
+
+.contact-grid aside p {
+  font-size: clamp(22px, 2.2vw, 32px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  max-width: 16ch;
+}
+
+.contact-grid aside ul {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.contact-grid aside a {
+  text-underline-offset: 4px;
+}
+
+.form {
+  display: grid;
+  gap: 28px;
+  max-width: 46rem;
+}
+
+.form .two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+.form label {
+  display: block;
+  color: var(--ash);
+  margin-bottom: 6px;
+}
+
+.form input,
+.form textarea {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  color: var(--paper);
+  padding: 8px 0 10px;
+  font: 600 clamp(19px, 1.6vw, 24px) / 1.3 var(--f);
+  letter-spacing: -0.01em;
+  transition: border-color 0.2s;
+}
+
+.form input:focus,
+.form textarea:focus {
+  border-bottom-color: var(--acc);
+}
+
+.form textarea {
+  resize: vertical;
+  min-height: 9em;
+}
+
+.form .err {
+  border: 1px solid var(--acc);
+  padding: 12px 16px;
+  color: var(--paper);
+}
+
+.form .send {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 24px;
+}
+
+.form button {
+  background: var(--acc);
+  color: var(--ink);
+  border: 0;
+  padding: 14px 26px 15px;
+  font: 700 17px/1 var(--f);
+  font-stretch: 112.5%;
+  cursor: pointer;
+}
+
+.form button:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.form .alt {
+  color: var(--ash);
+}
+
+.sent {
+  border-top: 2px solid var(--acc);
+  padding-top: 24px;
+  font-size: clamp(22px, 2.3vw, 34px);
+  line-height: 1.22;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  max-width: 26ch;
+}
+
+/* ---------------------------------------------------------------------------
+   Page transitions
+
+   Clicking into a project from the gallery wraps the navigation in
+   document.startViewTransition. The clicked title and the case study title
+   share a view-transition-name, so the one morphs into the other.
+   --------------------------------------------------------------------------- */
+
+::view-transition-group(*) {
+  animation-duration: 0.6s;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.2, 1);
+}
+
+::view-transition-old(project-title),
+::view-transition-new(project-title) {
+  height: 100%;
+  object-fit: fill;
+}
+
+/* ---------------------------------------------------------------------------
+   Narrow screens
+   --------------------------------------------------------------------------- */
+
+@media (max-width: 820px) {
+  .hero-foot {
+    grid-template-columns: 1fr;
   }
 
-  to {
-    opacity: 1;
-    transform: none;
+  .hero-side {
+    justify-self: start;
+    text-align: left;
+  }
+
+  .hero-side .acts,
+  .legend,
+  .act {
+    justify-content: flex-start;
+  }
+
+  .work .pin {
+    position: relative;
+    height: auto;
+    overflow: visible;
+  }
+
+  .track {
+    flex-direction: column;
+    transform: none !important;
+  }
+
+  .panel,
+  .panel.intro {
+    width: 100%;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    grid-template-rows: auto;
+  }
+
+  .p-name {
+    font-size: clamp(34px, 11vw, 70px);
+    white-space: normal;
+  }
+
+  .p-text {
+    grid-template-columns: 1fr;
+  }
+
+  .p-text dl {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .p-body figure {
+    height: auto;
+    aspect-ratio: 16 / 10;
+  }
+
+  .prog,
+  .gal-field {
+    display: none;
+  }
+
+  .sec-h,
+  .about,
+  .job,
+  .prose,
+  .step,
+  .nextp,
+  .shot figcaption,
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sec-h p {
+    grid-column: auto;
+  }
+
+  .job {
+    gap: 8px;
+  }
+
+  .facts {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .more ul,
+  .pairs {
+    grid-template-columns: 1fr;
+  }
+
+  .pair + .pair {
+    margin-top: 36px;
+  }
+
+  .facts-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .instruments {
+    grid-template-columns: 1fr;
+  }
+
+  .instruments > div + div {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .meta {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .shot figcaption {
+    gap: 4px;
+  }
+
+  .step {
+    gap: 10px;
+  }
+
+  .step .n {
+    font-size: 88px;
+  }
+
+  .nextp figure {
+    order: -1;
+  }
+
+  .contact .mail {
+    font-size: clamp(30px, 8.6vw, 64px);
+  }
+
+  .contact .mail .mbr {
+    display: inline;
   }
 }
 
-/* Hero content enters on load, lightly staggered. */
-@media (prefers-reduced-motion: no-preference) {
-  .art-enter {
-    animation: art-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+@media (max-width: 700px) {
+  .hero-name {
+    --name-k: var(--name-km);
+    top: 11cqh;
   }
 
-  .art-enter-2 {
-    animation-delay: 0.08s;
+  .hero-name .mbr {
+    display: inline;
   }
 
-  .art-enter-3 {
-    animation-delay: 0.16s;
+  .hero-t {
+    top: 19cqh;
+    font-size: min(calc((100cqw - 2 * var(--gut)) * var(--km)), 30cqh);
   }
-}
 
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-
-    .art main>section:not([data-no-reveal]),
-    .art main>nav,
-    .art main>footer {
-      animation: art-rise linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 55%;
-    }
-
-    /* Bands are tall, so a full entry range would leave them mid-fade for most
-       of their scroll. They get a shorter, earlier one. */
-    .art-band {
-      animation: art-rise linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 30%;
-    }
+  .hero-t .mbr {
+    display: inline;
   }
 }
 
-/* Respect users who prefer reduced motion (WCAG 2.3.3) */
+@media (max-width: 520px) {
+  .top nav a.opt {
+    display: none;
+  }
+
+  .meta,
+  .facts,
+  .facts-row,
+  .form .two {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Respect users who prefer reduced motion (WCAG 2.3.3). The fields check the
+   same query and render one still frame instead of animating. */
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {
@@ -392,5 +1636,9 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .legend {
+    display: none;
   }
 }

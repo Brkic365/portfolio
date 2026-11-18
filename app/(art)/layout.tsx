@@ -1,26 +1,31 @@
+import FieldTuning from '@/components/field/FieldTuning';
+import { getActivity } from '@/lib/activity';
+
 /**
- * Chrome-free wrapper for the art-directed presentation.
+ * Wrapper for every page of the site.
  *
- * Sets the neutral theme, which follows the system colour scheme. Project
- * pages nest their own `.art` element carrying a `data-theme` attribute to
- * override the palette and opt out of that following.
+ * Holds the shadow-lift filter for near-black screenshots and passes the
+ * build-time GitHub activity to the field engine, which maps it to how fast
+ * and dense every field runs.
  */
-export default function ArtLayout({
+export default async function ArtLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const commits = await getActivity();
   return (
-    <div className="art">
+    <>
+      <FieldTuning commits={commits} />
       {/* Shadow-lift filter for the near-black UI screenshots. Gamma raises
-          the shadows while leaving highlights alone — brightness() would just
-          grey the whole image out. Applied via .art-lift. */}
+          the shadows while leaving highlights alone; brightness() would just
+          grey the whole image out. Applied via .lift. */}
       <svg
         aria-hidden="true"
         focusable="false"
         style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}
       >
-        <filter id="art-lift" colorInterpolationFilters="sRGB">
+        <filter id="field-lift" colorInterpolationFilters="sRGB">
           <feComponentTransfer>
             <feFuncR type="gamma" exponent="0.7" />
             <feFuncG type="gamma" exponent="0.7" />
@@ -29,6 +34,6 @@ export default function ArtLayout({
         </filter>
       </svg>
       {children}
-    </div>
+    </>
   );
 }

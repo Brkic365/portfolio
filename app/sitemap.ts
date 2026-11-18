@@ -1,38 +1,27 @@
 import type { MetadataRoute } from "next";
-
-const siteUrl = "https://antoniobrkic.com";
-
-const projects = [
-  "vectraxr",
-  "stolarija-bm",
-  "tavola",
-  "stocks-royale",
-  "pentix",
-  "shelf",
-  "route-master",
-  "runtime",
-];
+import { projects } from "@/data/projects";
+import { SITE_URL } from "@/lib/meta";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   return [
     {
-      url: siteUrl,
+      url: SITE_URL,
       lastModified: now,
       changeFrequency: "monthly",
       priority: 1,
     },
     {
-      url: `${siteUrl}/contact`,
+      url: `${SITE_URL}/contact`,
       lastModified: now,
-      changeFrequency: "yearly" as const,
+      changeFrequency: "yearly",
       priority: 0.5,
     },
-    ...projects.map((slug) => ({
-      url: `${siteUrl}/work/${slug}`,
+    ...projects.map((p) => ({
+      url: `${SITE_URL}/work/${p.slug}`,
       lastModified: now,
       changeFrequency: "monthly" as const,
-      priority: 0.8,
+      priority: p.featured ? 0.8 : 0.6,
     })),
   ];
 }

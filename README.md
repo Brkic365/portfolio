@@ -2,10 +2,10 @@
 
 My personal site, live at **[antoniobrkic.com](https://antoniobrkic.com)**.
 
-An index of the work at `/`, and a case study per project at `/work/<slug>`. Each
-project page commits to its own palette and layout rather than reusing one
-template, so moving between them feels like turning pages in a magazine instead
-of paging through a CMS.
+An index of the work at `/`, and a case study per project at `/work/<slug>`. The
+whole site sits on one moving particle field. The big type is cut out of it, so
+the field shows through the letters, and each project has a motion of its own
+that the field takes on when you point at the project or open its page.
 
 ## How it is built
 
@@ -16,47 +16,159 @@ no serverless functions. The contact form is a server action rather than an API
 route, which means there is no public POST endpoint and the Resend key never
 reaches the browser.
 
-**Motion is scroll-driven CSS.** Reveals and the hero entrance use
-`animation-timeline: view()`, so there is no animation library and no client
-JavaScript keeping animations in sync with scroll. It is gated twice: behind
-`@supports`, so browsers without scroll timelines render the final state, and
-behind `prefers-reduced-motion`. Note that the global reduced-motion rule at the
-bottom of `globals.css` does **not** cover timeline-driven animations, because
-they ignore `animation-duration`. That is why the media query is repeated.
+**The pages are server components.** Anything that moves is a small client
+component dropped into a server-rendered page: `FieldCanvas`, `Knockout`,
+`Gallery`, `FieldTuning` and `ContactForm`. Server code asks for a field by
+role (`preset="band"`) rather than passing option objects across the client
+boundary. The presets live in `lib/field/presets.ts`.
 
-**One client component.** `components/art/ContactForm.tsx` is the only
-`'use client'` file. React 19 resets an uncontrolled form once its action
-resolves, so the action echoes submitted values back and the form is keyed on an
-attempt counter. Without that, a validation error throws away whatever the person
-had typed.
-
-**Screenshots are framed, never full-bleed.** A UI screenshot carries its own
-headlines, and putting site typography on top of it puts two type systems in one
-space. `components/art/Shot.tsx` renders them in window chrome at roughly half
-width, which also means the ~2300px sources downscale instead of upscaling.
+**The contact form keeps what you typed.** React 19 resets an uncontrolled form
+once its action resolves. The action echoes the submitted values back and the
+form is keyed on an attempt counter. Without that, a validation error throws
+away whatever the person had typed.
 
 **Dark screenshots get a gamma lift.** Several captures have a mean luminance
 under 45 of 255 and disappear against a dark background. An SVG
 `feComponentTransfer` filter in `app/(art)/layout.tsx` raises the shadows.
 Keep it gentle: a steeper curve amplifies the compression noise sitting in the
-near-black areas and the images turn grainy. Set per image with the `lift` flag.
-
-**The social card is generated.** `app/opengraph-image.tsx` renders it at build
-time in the site's own display face, so it cannot drift out of date. The font is
-fetched without a User-Agent override, since legacy UA strings make Google serve
-EOT, which Satori rejects. The buffer's signature is checked before use and the
-card falls back to a default sans if anything fails.
+near-black areas and the images turn grainy. It is set per project with the
+`lift` flag in `data/projects.ts`, from measured luminance, not by eye.
 
 **Missing files hide themselves.** `lib/publicAssets.ts` checks `/public` at
-build time. The résumé link and some project screenshots only render if their
-file exists, so nothing ships a 404. Drop the file in and it appears on the next
-build.
+build time. The portrait and the résumé link only render if their file exists,
+so nothing ships a 404. Drop the file in and it appears on the next build.
+
+## The field
+
+`lib/field/engine.ts` is a curl-noise particle field drawn on a 2D canvas.
+Particles leave trails in an offscreen buffer that fades a little every frame,
+and that buffer is composited into the visible canvas. A field can also take a
+mask, which is how the knockouts work.
+
+It has to run on every page without costing much, so:
+
+- **One loop for the page.** Every field on the page shares a single
+  `requestAnimationFrame`. When nothing is running, the loop stops instead of
+  idling.
+- **Built when it is needed.** An `IntersectionObserver` builds a field the
+  first time it comes within 320px of the viewport. The builds run one per
+  task, so a long page never blocks on all of them at once. Once built, a field
+  pauses whenever it is off screen.
+- **Stopped while the tab is hidden.** The loop is cancelled on
+  `visibilitychange` rather than relying on the browser to throttle rAF.
+- **Capped on narrow screens.** Below 700 CSS px a field uses `maxNarrow`
+  instead of `maxN`. Phones get roughly a quarter of the particles, and the
+  gallery's background field is switched off there entirely.
+- **Resized only when it matters.** On touch devices only a width change
+  rebuilds a field, so the address bar sliding in and out does not reset it.
+- **Still for reduced motion.** With `prefers-reduced-motion` the field draws
+  one settled frame and never starts the loop. The cursor and tap interactions
+  are off, the hero name does not assemble, and view transitions are skipped.
+
+Scrolling briefly speeds up every trail, and the pointer bends the field around
+it. Neither does anything under reduced motion.
+
+### Knockouts
+
+`components/field/Knockout.tsx` renders a heading as real text, laid out by CSS,
+selectable and read by screen readers. The canvas behind it traces that layout:
+`textMask()` walks the element's text with a `Range`, so it reads the browser's
+own line breaks and never touches the DOM React owns. Text inside `.sr-only` is
+skipped. Once the mask is drawn the element gets `data-ko="on"` and its text
+turns transparent. Without JavaScript, or before the field has drawn, the text
+is simply solid.
+
+The canvas has to set `font` before `fontStretch`, because assigning `font`
+resets the stretch. Canvas only takes the CSS keywords, so the computed
+percentage is snapped to the nearest one (125% is `expanded`). If it were
+skipped, the traced letters would come out narrower than the real ones and the
+knockout would not line up.
+
+Hero titles are sized with container queries: `--k` is 1 divided by the title's
+width in em at the site's settings, so any name spans the hero whatever its
+length. `--km` does the same for the narrow layout, where the `.mbr` breaks
+split the name across lines.
+
+### Signatures
+
+A signature is the motion a field takes on for one project. They are listed in
+`lib/field/signatures.ts`:
+
+| Signature | Project | Motion |
+| --- | --- | --- |
+| `curl` | the site | Curl noise, the default |
+| `orbit` | Vectra XR | Concentric ellipses, as if around a turntable |
+| `grain` | Stolarija-BM | Long parallel lines, like wood grain |
+| `swirl` | Tavola | A slow, warm swirl around the middle |
+| `pulse` | Pentix | Breathes out and in about once a second |
+| `bubble` | Shelf | Bubbles rising and wobbling |
+| `grid` | RouteMaster | Travel along a street grid |
+| `stream` | Runtime | A fast stream that jumps where a graph spikes |
+| `tick` | Stocks Royale | Flat runs broken by sudden price jumps |
+
+A field never switches signatures abruptly. `morph()` blends from one set of
+weights to the next over about 600ms. The colour belongs to the project, not to
+the signature, and is passed in with it.
+
+To add a signature, add an entry to `SIGNATURES` (`tint` is how much of the
+project's colour the trails take, `fade` scales trail length). Then add its
+velocity term to the flow loop in `engine.ts`, next to the others. Each one is
+a few lines that add to `vx` and `vy`, weighted by the signature's current
+blend.
+
+### Activity
+
+`lib/activity.ts` counts my public GitHub commits from the last 30 days, once,
+at build time. `FieldTuning` maps that count to the field's speed and density
+for the whole site: a quiet month is calm, a busy one is livelier, and both are
+clamped. The hero shows it as "Field speed: N commits in the last 30 days".
+
+It must never break or slow the build. There is a 4 second deadline for the
+whole count, and any failure (no network, rate limit, odd payload) returns
+`null`. The field then runs at its default and the label says "Field speed:
+default". `GITHUB_TOKEN` is optional and only raises the rate limit.
+
+### Transitions
+
+Opening a project from the gallery bursts the field outwards and then navigates
+inside `document.startViewTransition`. The project name morphs into the case
+study's title, which carries the same `view-transition-name`. The App Router
+renders the next page asynchronously, so `lib/field/transition.ts` polls on a
+timer until `#case-title` exists before letting the transition finish, and
+gives up after 2.5 seconds so the browser cross-fades instead. Where view
+transitions are not supported, or under reduced motion, the link is an
+ordinary link.
+
+## Social cards
+
+The cards are PNGs in `public/og`, one for the homepage and one per case study,
+and `lib/meta.ts` points each page's metadata at its own. If a card is missing,
+a page falls back to `home.png`. If that is missing too, the page has no image
+rather than a broken one.
+
+They are rendered by `scripts/og.mjs` from the real engine: a frozen frame of
+the field with the title as a knockout, in the site's own Archivo. It runs by
+hand, not in the build, so a missing browser or font can never break a deploy.
+Run it after changing a title, a project line or the field, then commit the
+PNGs:
+
+```bash
+npm run build
+npm run og                                   # starts `next start` on a spare port
+BASE=http://localhost:3000 node scripts/og.mjs   # or use a server that is already running
+node scripts/og.mjs tavola home              # only some cards
+```
+
+It needs Playwright with Chromium, which is deliberately not a project
+dependency. Install it globally (`npm i -g playwright && npx playwright install
+chromium`) or anywhere on `NODE_PATH`.
 
 ## Stack
 
 Next.js (App Router), TypeScript, Tailwind CSS v4, and Resend for the contact
-form. Set in Instrument Serif, Newsreader and JetBrains Mono, all loaded with the
-`latin-ext` subset so the ć in Brkić renders instead of falling back mid-word.
+form. Set in Archivo through `next/font`, with its width axis loaded so the
+display type can run at 125% (expanded). It loads with the `latin-ext` subset
+so the ć in Brkić renders instead of falling back mid-word.
 
 ## Running it
 
@@ -70,31 +182,49 @@ message rather than failing, so the rest of the site runs fine without it:
 
 ```env
 RESEND_API_KEY=re_your_api_key_here
+GITHUB_TOKEN=optional_for_the_activity_count
 ```
 
 ## Structure
 
 ```
 app/
-  (art)/            Route group for the site. Its layout holds the SVG filter.
-    page.tsx        Index: hero, work, about, archive, contact footer
-    work/<slug>/    One page per project, each with its own theme
+  (art)/            Route group for the site. Its layout holds the lift filter
+                    and applies the activity tuning.
+    page.tsx        Index: hero, gallery, experience, about, more work, contact
+    work/<slug>/    One case study per project
     contact/        Contact page and its server action
-  opengraph-image.tsx
-components/art/     Shot (framed screenshot) and ContactForm
-data/projectThemes.ts   Per-project palettes, applied as inline CSS variables
-lib/publicAssets.ts     Build-time file existence checks
+  sitemap.ts        Built from data/projects.ts
+components/
+  field/            FieldCanvas, Knockout, Gallery, FieldTuning (client)
+  site/             CaseStudy, CaseHero, NextProject, Band, Frame, Facts and friends
+  art/ContactForm.tsx
+data/projects.ts    Every project: copy, accent, signature, chain order
+lib/
+  field/            engine, signatures, presets, noise, useField, transition
+  activity.ts       Build-time GitHub commit count
+  meta.ts           Page metadata and social card paths
+  publicAssets.ts   Build-time file existence checks
+scripts/og.mjs      Renders the social cards
+public/og/          The rendered cards, committed
 ```
 
 ## Adding a project
 
-1. Add a palette to `data/projectThemes.ts`. Check the secondary and tertiary
-   inks clear 4.5:1 against the background.
-2. Add an entry to the `work` array in `app/(art)/page.tsx`.
-3. Create `app/(art)/work/<slug>/page.tsx`. Copy the closest existing page, then
-   change the layout, since sharing one template defeats the point.
-4. Add the slug to `app/sitemap.ts` and fix the next-project links either side of
-   it in the chain.
+1. Add an entry to `projects` in `data/projects.ts`: copy, screenshot and its
+   pixel size, `lift`, a signature and an accent. Check that the accent clears
+   4.5:1 against `#0e0e10`, since it also colours small text. Position in the
+   array is position in the gallery and in the next-project chain, so the links
+   either side update themselves. Set `featured: false` to keep it out of both
+   and list it under More work instead.
+2. Create `app/(art)/work/<slug>/page.tsx`. Wrap it in `CaseStudy` and give the
+   hero its `k` and `km`: one divided by the width of the name's longest line in
+   em, set in Archivo at 900 weight, 125% stretch and -0.02em tracking. Measure
+   it in a browser rather than guessing. Use `pageMetadata` with
+   `card: '<slug>'`.
+3. Render its card with `node scripts/og.mjs <slug>` and commit the PNG.
+
+The sitemap reads from `data/projects.ts`, so there is nothing to add there.
 
 ---
 
