@@ -536,8 +536,8 @@ export function createField(canvas: HTMLCanvasElement, opt: Partial<FieldOptions
       tint += s.tint * w[k];
       fm += s.fade * w[k];
     }
-    const [wCurl, wOrbit, wGrain, wSwirl, wPulse, wBub, wGrid, wStream, wTick, wSun] = w;
-    const needCurl = wCurl + wOrbit + wPulse + wGrid + wSun > 0.001;
+    const [wCurl, wOrbit, wGrain, wSwirl, wPulse, wBub, wGrid, wStream, wTick, wSun, wWind] = w;
+    const needCurl = wCurl + wOrbit + wPulse + wGrid + wSun + wWind > 0.001;
     // The sun's angle swings slowly, as if the clock were being dragged through the day.
     const sunA = 0.55 + 0.28 * Math.sin(now / 7000), sunX = Math.cos(sunA), sunY = Math.sin(sunA);
     const BS = 64 * dpr;
@@ -650,6 +650,16 @@ export function createField(canvas: HTMLCanvasElement, opt: Partial<FieldOptions
         const shade = Noise(Math.floor(x / BS) * 0.9, Math.floor(y / BS) * 0.9, 5.3) > 0.18 ? 0.3 : 1;
         vx += (sunX * sp * 2.3 * shade + cx * sp * 0.12) * wSun;
         vy += (sunY * sp * 2.3 * shade + cy * sp * 0.12) * wSun;
+      }
+      if (wWind > 0.001) {
+        // Bura: blowing from the north-east, down and to the left. Speed depends on the
+        // position across the flow, so it breaks into narrow fast jets with slack air
+        // between, as it does below the mountain gaps, and gusts travel down each jet.
+        const across = (x * 0.78 + y * 0.62) * sc, along = (x * -0.62 + y * 0.78) * sc;
+        const jet = 0.35 + 2.6 * Math.max(0, Noise(across * 1.7, 2.9, t * 0.25));
+        const gust = 0.8 + 0.4 * Noise(along * 0.9 - t * 2, across * 0.5, 7.7);
+        vx += (-0.62 * sp * 1.8 * jet * gust + cx * sp * 0.15) * wWind;
+        vy += (0.78 * sp * 1.8 * jet * gust + cy * sp * 0.15) * wWind;
       }
       if (mouse.on) {
         const dx = x - mouse.x, dy = y - mouse.y, d2 = dx * dx + dy * dy;

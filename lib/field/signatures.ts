@@ -32,6 +32,8 @@ export const SIGNATURES = {
   tick: { tint: 0.5, fade: 0.6, about: 'Price ticks' },
   /** Sada: long parallel rays at the sun's angle, slowed to a crawl in blocky shade. */
   sun: { tint: 0.55, fade: 0.5, about: 'Sun between buildings' },
+  /** Bura: a cold wind from the north-east, in narrow fast jets with slack air between. */
+  wind: { tint: 0.5, fade: 0.55, about: 'Bura down the coast' },
 } as const;
 
 export type Signature = keyof typeof SIGNATURES;
