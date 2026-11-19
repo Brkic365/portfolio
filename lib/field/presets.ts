@@ -26,25 +26,25 @@ export const PRESETS = {
   /** A case study hero: the homepage field, calmer, behind the project name. */
   case: {
     share: 0.09, density: 300, maxN: 2600, maxNarrow: 900, speed: 1.05, drift: 0.14, light: 0.9,
-    scale: 0.0013, tStep: 0.0009, fade: 0.035, outside: 0, fill: 0.035, life: [80, 260], warm: 60,
+    scale: 0.0013, tStep: 0.0009, fade: 0.035, outside: 0, fill: 0.16, life: [80, 260], warm: 60,
     still: 260, push: 1.6, swirl: 2, spawnIn: 0.9,
   },
   /** Section headings: quieter knockouts. */
   quiet: {
     density: 220, maxN: 2200, maxNarrow: 900, speed: 1, tStep: 0.0012, fade: 0.05, outside: 0,
-    fill: 0.1, light: 0.9, spawnIn: 0.95, life: [50, 160], dprMax: 1.25, warm: 90, still: 200,
+    fill: 0.18, light: 1, spawnIn: 0.95, life: [50, 160], dprMax: 1.25, warm: 90, still: 200,
     push: 1.6, swirl: 2, share: 0.08,
   },
   /** Project names in the gallery: a little more colour. */
   name: {
     density: 220, maxN: 2200, maxNarrow: 900, speed: 1, tStep: 0.0012, fade: 0.05, outside: 0,
-    fill: 0.1, light: 0.9, spawnIn: 0.95, life: [50, 160], dprMax: 1.25, warm: 90, still: 200,
+    fill: 0.18, light: 1, spawnIn: 0.95, life: [50, 160], dprMax: 1.25, warm: 90, still: 200,
     push: 1.6, swirl: 2, share: 0.22,
   },
   /** The email in the footer. */
   mail: {
     density: 220, maxN: 2200, maxNarrow: 900, speed: 1, tStep: 0.0012, fade: 0.05, outside: 0,
-    fill: 0.14, light: 0.9, spawnIn: 0.95, life: [50, 160], dprMax: 1.25, warm: 90, still: 200,
+    fill: 0.2, light: 1, spawnIn: 0.95, life: [50, 160], dprMax: 1.25, warm: 90, still: 200,
     push: 1.6, swirl: 2, share: 0.32,
   },
 } satisfies Record<string, Partial<FieldOptions>>;
