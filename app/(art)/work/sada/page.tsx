@@ -39,7 +39,7 @@ export default function SadaPage() {
         k: 0.3112,
         km: 0.3112,
         lead: 'Sada means “now”. Where to sit in the sun, or out of it, in the centre of Zagreb.',
-        role: 'Zagreb Hackathon, March 2026, with Marko Livaic',
+        role: 'Zagreb Hackathon, March 2026, with Marko Livaic. I built the 3D shadow map and the shadow-based picking.',
       }}
     >
       <section className="sec wrap" style={{ paddingTop: 'clamp(40px, 6vw, 88px)' }} aria-labelledby="how-h">
@@ -58,12 +58,17 @@ export default function SadaPage() {
       <Band />
 
       <section className="sec wrap" aria-labelledby="sun-h">
-        <SectionHead id="sun-h" title="From the buildings" accent={p.accent} note="No weather service, no guesswork about shade." />
+        <SectionHead id="sun-h" title="From the buildings" accent={p.accent} note="My part at the hackathon: the shadows, and picking by them." />
         <div className="prose">
           <div />
           <div className="txt">
             <p className="big">
               Sun and shade come from the city’s own 3D model of 8,732 buildings and the position of the sun.
+            </p>
+            <p>
+              At the hackathon I built that part: the 3D shadow map of the centre and the picking that chooses a
+              place by whether it is actually in the light. It covers a box of about 2.3 by 1.3 km around the main
+              square.
             </p>
             <p>
               Each building is a flat-roofed block. For a seat, the app follows a line from it toward the sun and
@@ -100,7 +105,7 @@ export default function SadaPage() {
         <Facts
           items={[
             ['Built with', 'Next.js, Mapbox GL, Web Workers'],
-            ['Covers', '2.3 by 1.3 km around the main square'],
+            ['My part', 'The 3D shadow map and the shadow-based picking'],
             ['Knows', '8,732 buildings, 147 cafés, 342 benches'],
             ['Live at', p.url, `https://${p.url}/`],
           ]}
