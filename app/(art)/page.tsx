@@ -7,7 +7,6 @@ import SectionHead from '@/components/site/SectionHead';
 import SiteFooter from '@/components/site/SiteFooter';
 import TopNav from '@/components/site/TopNav';
 import { featured, more } from '@/data/projects';
-import { activityLabel, getActivity } from '@/lib/activity';
 import { pageMetadata } from '@/lib/meta';
 import { publicFileExists } from '@/lib/publicAssets';
 
@@ -57,15 +56,14 @@ const facts: [string, string][] = [
 ];
 
 export default async function Home() {
-  const commits = await getActivity();
   // First of these that exists gets used, so the photo can move without a code change.
   const portrait = ['images/antonio-brkic.jpg', 'avatar.jpg', 'avatar.png'].find(publicFileExists);
 
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────────
-          The name is real text; the field traces it. On the first visit
-          of a session the letters assemble out of scattered particles. */}
+          The name is real text; the field traces it. On each page load it
+          starts as loose noise and the particles gather into the letters. */}
       <header className="hero" id="top">
         <FieldCanvas preset="hero" trace="hero-name" formOnce />
         <TopNav home />
@@ -87,15 +85,6 @@ export default async function Home() {
               <a href="#work">See the work</a>
               <a href="#contact">Get in touch</a>
             </div>
-            <p className="legend">
-              <i aria-hidden="true" />
-              <span className="fine">The field bends around your cursor.</span>
-              <span className="coarse">Tap the field to stir it.</span>
-            </p>
-            <p className="act" title="Counted from public GitHub push events at build time">
-              <b aria-hidden="true" />
-              {activityLabel(commits)}
-            </p>
           </div>
         </div>
       </header>

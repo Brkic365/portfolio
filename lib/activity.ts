@@ -88,8 +88,3 @@ export function getActivity(): Promise<number | null> {
   memo ??= fetchCommits();
   return memo;
 }
-
-export function activityLabel(commits: number | null): string {
-  if (commits === null) return 'Field speed: default';
-  return `Field speed: ${commits} commit${commits === 1 ? '' : 's'} in the last 30 days`;
-}

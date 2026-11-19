@@ -33,7 +33,6 @@ export default function SiteFooter({ accent }: { accent?: string }) {
         </div>
         <div className="colo small">
           <span>Antonio Brkić, Zagreb</span>
-          <span>Set in Archivo. The field is curl noise on a 2D canvas.</span>
         </div>
       </div>
     </footer>
