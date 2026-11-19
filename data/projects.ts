@@ -81,7 +81,7 @@ export const projects: Project[] = [
     size: [2527, 1207],
     lift: false,
     sig: 'swirl',
-    accent: '#e08b3c',
+    accent: '#14917f',
     featured: true,
   },
   {
