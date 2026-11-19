@@ -31,7 +31,7 @@ export interface Project {
   lift: boolean;
   sig: Signature;
   accent: string;
-  /** In the homepage gallery and the next-project chain. Stocks Royale lives under More work. */
+  /** In the homepage gallery and the next-project chain. The rest live under More work. */
   featured: boolean;
 }
 
@@ -78,10 +78,10 @@ export const projects: Project[] = [
     url: 'tavola-menu.vercel.app',
     urlLabel: 'Live',
     image: '/projects/tavola.png',
-    size: [2530, 1342],
+    size: [2527, 1207],
     lift: false,
     sig: 'swirl',
-    accent: '#e08b3c',
+    accent: '#14917f',
     featured: true,
   },
   {
@@ -98,7 +98,7 @@ export const projects: Project[] = [
     lift: true,
     sig: 'pulse',
     accent: '#7b63ff',
-    featured: true,
+    featured: false,
   },
   {
     slug: 'shelf',
@@ -114,7 +114,7 @@ export const projects: Project[] = [
     lift: true,
     sig: 'bubble',
     accent: '#3fa06a',
-    featured: true,
+    featured: false,
   },
   {
     slug: 'route-master',
@@ -158,7 +158,7 @@ export const projects: Project[] = [
     url: 'sada-hackathon.vercel.app',
     urlLabel: 'Live',
     image: '/projects/sada.png',
-    size: [880, 600],
+    size: [2542, 1336],
     lift: false,
     sig: 'sun',
     accent: '#f2b330',
@@ -219,6 +219,8 @@ export interface MoreItem {
 export const more: MoreItem[] = [
   // Kept its full page; it just no longer earns a slot in the gallery.
   { name: 'Stocks Royale', note: 'A trading game on simulated market data', href: '/work/stocks-royale', internal: true },
+  { name: 'Pentix', note: 'Counts push-up reps through your phone camera', href: '/work/pentix', internal: true },
+  { name: 'Shelf', note: 'What you can pour from the bottles you already own', href: '/work/shelf', internal: true },
   { name: 'AI MotionMetrics', note: 'Rep tracking in the browser with TensorFlow.js', href: 'https://ai-motion-metrics.vercel.app/' },
   { name: 'EBankc', note: 'A decentralised finance banking concept', href: 'https://ebankc.vercel.app/' },
   { name: 'RocketWizard', note: 'Copy-trading SaaS with crypto billing', href: 'https://rocket-wizard.vercel.app/' },

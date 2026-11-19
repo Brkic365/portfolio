@@ -48,6 +48,7 @@ export default function TavolaPage() {
           alt="The Tavola menu and dish viewer"
           url={p.url}
           href={`https://${p.url}`}
+          ratio="2527 / 1207"
           priority
         />
       )}

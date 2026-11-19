@@ -44,7 +44,7 @@ const experience: Role[] = [
     role: 'Co-founder and developer',
     org: 'Vectra XR',
     href: '/work/vectraxr',
-    note: 'Led the frontend architecture, wrote the Python service that converts 3D files, and ran code review and the release process for two other engineers.',
+    note: 'Led the frontend architecture, and ran code review and the release process for two other engineers.',
   },
 ];
 
