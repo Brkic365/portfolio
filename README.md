@@ -143,6 +143,7 @@ A signature is the motion a field takes on for one project. They are listed in
 | `stream` | Runtime | A fast stream that jumps where a graph spikes |
 | `tick` | Stocks Royale | Flat runs broken by sudden price jumps |
 | `sun` | Sada | Long parallel rays at a slowly swinging sun angle, slowed in blocky shade |
+| `wind` | Bura | Flow from the north-east, split into narrow fast jets with gusts running down them |
 
 A field never switches signatures abruptly. `morph()` blends from one set of
 weights to the next over about 600ms. The colour belongs to the project, not to
