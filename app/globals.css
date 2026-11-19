@@ -1483,6 +1483,29 @@ html[data-vt] .vt-title a {
   object-fit: fill;
 }
 
+/* The pages themselves: the old one clears quickly and the new one comes up
+   just behind it, so the two never sit on top of each other half-faded while
+   the title travels. */
+::view-transition-old(root) {
+  animation: vt-out 0.22s ease-out both;
+}
+
+::view-transition-new(root) {
+  animation: vt-in 0.42s 0.12s ease-out both;
+}
+
+@keyframes vt-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-in {
+  from {
+    opacity: 0;
+  }
+}
+
 /* ---------------------------------------------------------------------------
    Narrow screens
    --------------------------------------------------------------------------- */

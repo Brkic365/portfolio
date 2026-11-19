@@ -30,31 +30,34 @@ function fieldCanvasFor(el: HTMLElement): HTMLCanvasElement | null {
 }
 
 /**
- * Paints a still of the field into a knockout's letters (a background clipped
- * to the text), so the view transition snapshots particles, not blank or solid
- * type. Returns false when there is nothing drawn to copy.
+ * A still of the field behind a knockout, cropped to its letters, as a data
+ * URL. Null when there is nothing drawn to copy.
  */
-function stillFrame(el: HTMLElement): boolean {
-  if (el.dataset.ko !== 'on') return false;
+function stillOf(el: HTMLElement): string | null {
+  if (el.dataset.ko !== 'on') return null;
   const c = fieldCanvasFor(el);
-  if (!c || !c.width) return false;
+  if (!c || !c.width) return null;
   const cr = c.getBoundingClientRect(), r = el.getBoundingClientRect();
-  if (!cr.width || !r.width || !r.height) return false;
+  if (!cr.width || !r.width || !r.height) return null;
   const sx = c.width / cr.width, sy = c.height / cr.height;
   const w = Math.max(1, Math.round(r.width * sx)), h = Math.max(1, Math.round(r.height * sy));
   const crop = document.createElement('canvas');
   crop.width = w;
   crop.height = h;
   const g = crop.getContext('2d');
-  if (!g) return false;
+  if (!g) return null;
   g.drawImage(c, (r.left - cr.left) * sx, (r.top - cr.top) * sy, w, h, 0, 0, w, h);
   try {
-    el.style.backgroundImage = `url(${crop.toDataURL()})`;
+    return crop.toDataURL();
   } catch {
-    return false;
+    return null;
   }
+}
+
+/** Fills a knockout's letters with a still (a background clipped to the text). */
+function applyStill(el: HTMLElement, url: string) {
+  el.style.backgroundImage = `url(${url})`;
   el.classList.add('ko-still');
-  return true;
 }
 
 function clearStill(el: HTMLElement | null) {
@@ -63,12 +66,32 @@ function clearStill(el: HTMLElement | null) {
   el.style.backgroundImage = '';
 }
 
+/**
+ * Keeps the borrowed still on the new title until its own field has drawn, so
+ * the letters never go blank or solid in between. Gives up after a few seconds.
+ */
+function handOver(el: HTMLElement) {
+  if (el.dataset.ko) return clearStill(el);
+  const mo = new MutationObserver(() => {
+    if (!el.dataset.ko) return;
+    mo.disconnect();
+    clearTimeout(timer);
+    clearStill(el);
+  });
+  const timer = setTimeout(() => {
+    mo.disconnect();
+    clearStill(el);
+  }, 4000);
+  mo.observe(el, { attributes: true, attributeFilter: ['data-ko'] });
+}
+
 export function morphTo(router: Router, href: string, title: HTMLElement | null, targetId = 'case-title') {
   const root = document.documentElement;
+  const still = title ? stillOf(title) : null;
   if (title) {
     title.style.viewTransitionName = 'project-title';
     title.classList.add('vt-title');
-    stillFrame(title);
+    if (still) applyStill(title, still);
   }
   let next: HTMLElement | null = null;
   root.dataset.vt = 'out';
@@ -78,13 +101,14 @@ export function morphTo(router: Router, href: string, title: HTMLElement | null,
         router.push(href);
         const t0 = performance.now();
         // Timers rather than rAF: rendering is paused while the transition waits on us.
-        // Wait for the new title's field to have drawn as well, so it is captured as
-        // particles; without that it would snapshot as solid white for a moment.
+        // Resolve as soon as the new title exists. Its own field cannot draw yet
+        // (it starts from an IntersectionObserver, which is paused too), so it
+        // borrows the old title's still and travels as the same particles.
         const poll = () => {
           const el = window.location.pathname === href ? document.getElementById(targetId) : null;
-          if (el && el.dataset.ko) {
+          if (el) {
             next = el;
-            stillFrame(el);
+            if (still) applyStill(el, still);
             resolve();
           } else if (performance.now() - t0 > 2500) resolve();
           else setTimeout(poll, 16);
@@ -94,7 +118,7 @@ export function morphTo(router: Router, href: string, title: HTMLElement | null,
   );
   vt.finished.finally(() => {
     delete root.dataset.vt;
-    clearStill(next);
+    if (next) handOver(next);
     if (title) {
       clearStill(title);
       title.style.viewTransitionName = '';
