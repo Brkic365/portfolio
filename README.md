@@ -158,12 +158,11 @@ blend.
 `lib/activity.ts` counts my public GitHub commits from the last 30 days, once,
 at build time. `FieldTuning` maps that count to the field's speed and density
 for the whole site: a quiet month is calm, a busy one is livelier, and both are
-clamped. The hero shows it as "Field speed: N commits in the last 30 days".
+clamped. Nothing on the page shows the number; it only sets the pace.
 
 It must never break or slow the build. There is a 4 second deadline for the
 whole count, and any failure (no network, rate limit, odd payload) returns
-`null`. The field then runs at its default and the label says "Field speed:
-default". `GITHUB_TOKEN` is optional and only raises the rate limit.
+`null`, and the field runs at its default. `GITHUB_TOKEN` is optional and only raises the rate limit.
 
 ### Transitions
 
@@ -171,8 +170,11 @@ Opening a project from the gallery bursts the field outwards and then navigates
 inside `document.startViewTransition`. The project name morphs into the case
 study's title, which carries the same `view-transition-name`. The App Router
 renders the next page asynchronously, so `lib/field/transition.ts` polls on a
-timer until `#case-title` exists before letting the transition finish, and
-gives up after 2.5 seconds so the browser cross-fades instead. Where view
+timer until `#case-title` exists and its field has drawn before letting the
+transition finish, and gives up after 2.5 seconds so the browser cross-fades
+instead. Both titles carry a still of their own field, clipped to the letters,
+while the browser snapshots them, so the name travels as particles; a plain
+knockout would snapshot as nothing and solid text would flash white. Where view
 transitions are not supported, or under reduced motion, the link is an
 ordinary link.
 
