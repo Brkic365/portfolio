@@ -61,6 +61,12 @@ export interface FieldOptions {
   outside: number;
   /** Faint solid fill of the mask, so letterforms read before trails arrive. */
   fill: number;
+  /**
+   * Opacity of the ground colour painted inside the letters first. It hides the
+   * background field behind a knockout, so the letters' own trails are not
+   * lost among the backdrop's crossing through them.
+   */
+  base: number;
   /** Share of respawns placed inside the mask. */
   spawnIn: number;
   life: [number, number];
@@ -117,7 +123,8 @@ export const DEFAULTS: FieldOptions = {
   tStep: 0.0016,
   fade: 0.04,
   outside: 0.13,
-  fill: 0.03,
+  fill: 0.16,
+  base: 0.7,
   spawnIn: 0.6,
   life: [60, 220],
   dprMax: 1.5,
@@ -136,6 +143,8 @@ export const DEFAULTS: FieldOptions = {
 const K = SIGNATURE_KEYS.length;
 const MORPH_MS = 600;
 const PAPER: RGB = [237, 236, 230];
+/** The page ground (#0e0e10), painted under a knockout's trails. */
+const GROUND = 'rgb(14,14,16)';
 const ease = (p: number) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
 
 export function hexToRgb(hex: string): RGB {
@@ -691,6 +700,17 @@ export function createField(canvas: HTMLCanvasElement, opt: Partial<FieldOptions
     if (o.plain || !mask || !inside || !ic) {
       v.globalAlpha = 1;
       return;
+    }
+    if (o.base > 0) {
+      // Ground first, so the backdrop does not show through the letters.
+      ic.globalCompositeOperation = 'source-over';
+      ic.clearRect(0, 0, W, H);
+      ic.drawImage(mask, 0, 0);
+      ic.globalCompositeOperation = 'source-in';
+      ic.fillStyle = GROUND;
+      ic.fillRect(0, 0, W, H);
+      v.globalAlpha = o.base * insideNow;
+      v.drawImage(inside, 0, 0);
     }
     v.globalAlpha = o.fill * insideNow;
     v.drawImage(mask, 0, 0);
