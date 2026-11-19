@@ -49,10 +49,10 @@ export default function SadaPage() {
 
       <Frame
         src={p.image}
-        alt="Sada over a 3D map of Zagreb: Hi Chai, sun until 13:34, a three minute walk"
+        alt="Sada over a 3D map of central Zagreb, asking where to sit: café or bench, sun or shade"
         url={p.url}
         href={`https://${p.url}/`}
-        ratio="22 / 15"
+        ratio="2542 / 1336"
       />
 
       <Band />
