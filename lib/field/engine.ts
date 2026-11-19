@@ -128,7 +128,7 @@ export const DEFAULTS: FieldOptions = {
   swirl: 2.8,
   sig: 'curl',
   form: false,
-  formMs: 1200,
+  formMs: 2600,
   frozen: false,
   disturb: true,
 };
@@ -417,7 +417,9 @@ export function createField(canvas: HTMLCanvasElement, opt: Partial<FieldOptions
         TY[i] = pts[k * 2 + 1] + Math.random() * 3;
         SX[i] = (Math.random() * 1.1 - 0.05) * W;
         SY[i] = (Math.random() * 1.1 - 0.05) * H;
-        FD[i] = Math.random() * 0.2; // staggered departures, so the letters gather instead of snapping
+        // Departures are staggered and none leave at once: the hero opens as loose noise,
+        // then the particles peel off into the letters a few at a time.
+        FD[i] = 0.16 + Math.random() * 0.32;
         X[i] = PX[i] = SX[i];
         Y[i] = PY[i] = SY[i];
       }
@@ -455,7 +457,7 @@ export function createField(canvas: HTMLCanvasElement, opt: Partial<FieldOptions
     const sp = o.speed * dpr * G.speed, dr = o.drift * dpr;
     t += o.tStep;
     // Trails show evenly while the particles travel, then the knockout fades in as they arrive.
-    const lit = Math.pow(Math.max(0, (p - 0.25) / 0.75), 1.5);
+    const lit = Math.pow(Math.max(0, (p - 0.5) / 0.5), 1.5);
     outsideNow = 0.8 + (o.outside - 0.8) * lit;
     insideNow = lit;
     tc.globalCompositeOperation = 'destination-out';
@@ -477,11 +479,20 @@ export function createField(canvas: HTMLCanvasElement, opt: Partial<FieldOptions
         Y[i] = y - (Noise(qx + 0.6, qy, t) - Noise(qx - 0.6, qy, t)) * sp;
       } else {
         const pi = Math.max(0, Math.min(1, (p - FD[i]) / (1 - FD[i])));
-        const e = 1 - Math.pow(1 - pi, 3), bend = Math.sin(Math.PI * e) * amp;
-        X[i] = SX[i] + (TX[i] - SX[i]) * e + bx * bend;
-        Y[i] = SY[i] + (TY[i] - SY[i]) * e + by * bend;
-        if (pi === 0) continue;
-        if (e > 0.96) FD[i] = -1;
+        if (pi === 0) {
+          // Not left yet: wander with the curl field as plain noise. The start point moves
+          // with it, so the glide into the letters begins wherever the particle has got to.
+          const qx = SX[i] * cs, qy = SY[i] * cs;
+          SX[i] += (Noise(qx, qy + 0.6, t) - Noise(qx, qy - 0.6, t)) * sp * 1.4 + dr;
+          SY[i] -= (Noise(qx + 0.6, qy, t) - Noise(qx - 0.6, qy, t)) * sp * 1.4;
+          X[i] = SX[i];
+          Y[i] = SY[i];
+        } else {
+          const e = 1 - Math.pow(1 - pi, 3), bend = Math.sin(Math.PI * e) * amp;
+          X[i] = SX[i] + (TX[i] - SX[i]) * e + bx * bend;
+          Y[i] = SY[i] + (TY[i] - SY[i]) * e + by * bend;
+          if (e > 0.96) FD[i] = -1;
+        }
       }
       // Draw only the newest stretch of each move, so streaks stay short whatever the frame rate.
       const dx = X[i] - PX[i], dy = Y[i] - PY[i], d = Math.sqrt(dx * dx + dy * dy), k = d > cap ? cap / d : 1;

@@ -37,6 +37,9 @@ html {
    field (z-index -1 in the root stacking context) sits between the two. */
 body {
   margin: 0;
+  /* The text scrims reach past their columns; on a phone that would otherwise
+     widen the page and let it pan sideways. */
+  overflow-x: clip;
   color: var(--paper);
   font: 400 17px/1.55 var(--f);
   -webkit-font-smoothing: antialiased;
@@ -164,6 +167,18 @@ textarea:focus-visible {
   mask-composite: intersect;
 }
 
+@media (max-width: 700px) {
+  :where(
+      .hero-lead, .hero-side, .case-lead, .meta, .sec-h p, .job p, .job .when, .about .txt,
+      .facts, .prose .txt, .prose .label, .step p, .pair p, .facts-row, .instruments span,
+      .shot figcaption, .p-text, .p-meta, .intro p, .more ul, .nextp .line, .contact p.k,
+      .contact .links, .colo, .contact-grid aside, .form, .crumb
+    )::before {
+    inset: -40px calc(-1 * var(--gut));
+    --feather: 40px;
+  }
+}
+
 /* ---------------------------------------------------------------------------
    Knockouts
 
@@ -198,10 +213,32 @@ textarea:focus-visible {
   color: transparent;
 }
 
-/* During a page transition the moving title is captured as solid type, since a
-   transparent knockout would snapshot as nothing. */
-html[data-vt] .vt-title[data-ko="on"] {
-  color: var(--paper);
+/* With scripts on, a knockout is hidden until its field decides: it then either
+   goes clear over the traced field (data-ko="on") or turns solid ("off"). That
+   keeps the letters from flashing white before the particles reach them. If
+   the field never reports, the text comes back after a few seconds anyway. */
+@media (scripting: enabled) {
+  .ko:not([data-ko]) {
+    color: transparent;
+    animation: ko-fallback 0s 3s forwards;
+  }
+}
+
+@keyframes ko-fallback {
+  to {
+    color: var(--paper);
+  }
+}
+
+/* During a page transition the moving title carries a still of its own field,
+   clipped to the letters, so it travels as particles rather than as solid
+   type (a plain transparent knockout would snapshot as nothing). */
+.ko.ko-still {
+  color: transparent;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
   transition: none;
 }
 
@@ -346,53 +383,6 @@ html[data-vt] .vt-title a {
   text-underline-offset: 4px;
   text-decoration-color: var(--hot);
   text-decoration-thickness: 2px;
-}
-
-.legend {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: flex-end;
-  margin-top: 14px;
-}
-
-.legend i {
-  display: inline-block;
-  width: 22px;
-  height: 2px;
-  background: var(--hot);
-}
-
-.legend .coarse {
-  display: none;
-}
-
-@media (hover: none) {
-  .legend .fine {
-    display: none;
-  }
-
-  .legend .coarse {
-    display: inline;
-  }
-}
-
-.act {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: flex-end;
-  margin-top: 6px;
-  color: var(--ash);
-  font-variant-numeric: tabular-nums;
-}
-
-.act b {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--hot);
-  box-shadow: 0 0 0 3px rgba(255, 90, 31, 0.18);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1507,9 +1497,7 @@ html[data-vt] .vt-title a {
     text-align: left;
   }
 
-  .hero-side .acts,
-  .legend,
-  .act {
+  .hero-side .acts {
     justify-content: flex-start;
   }
 
@@ -1673,9 +1661,5 @@ html[data-vt] .vt-title a {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-
-  .legend {
-    display: none;
   }
 }

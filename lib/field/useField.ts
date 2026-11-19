@@ -13,24 +13,22 @@ export interface FieldProps {
   accents?: Partial<Record<Signature, string>>;
   /** Text smaller than this (CSS px) stays solid instead of becoming a knockout. */
   minSize?: number;
-  /** Assemble the traced text out of scattered particles, once per browser session. */
+  /** Assemble the traced text out of loose noise, once per page load. */
   formOnce?: boolean;
   /** Handed the field once it exists, and null when it goes away. */
   onField?: (field: FieldHandle | null) => void;
 }
 
-const FORMED_KEY = 'field-formed';
+let formed = false;
 
-/** Whether this visit should play the formation pass. Records that it has. */
+/**
+ * Whether this mount should play the formation pass: once per page load, so a
+ * fresh visit or a reload always opens on noise, while coming back to the home
+ * page through the site's own links does not replay it.
+ */
 function claimFormation(): boolean {
-  if (prefersReducedMotion()) return false;
-  try {
-    if (sessionStorage.getItem(FORMED_KEY)) return false;
-    sessionStorage.setItem(FORMED_KEY, '1');
-  } catch {
-    // Storage blocked (private mode, sandboxed preview): skip the flourish rather than replay it on every load.
-    return false;
-  }
+  if (formed || prefersReducedMotion()) return false;
+  formed = true;
   return true;
 }
 
@@ -63,8 +61,8 @@ export function useField(
       opts.mask = textMask(el, minSize);
       opts.plain = false;
       opts.onMask = (on) => {
-        if (on) el.dataset.ko = 'on';
-        else delete el.dataset.ko;
+        // 'off' rather than nothing, so text hidden while it waits for the field shows again.
+        el.dataset.ko = on ? 'on' : 'off';
       };
     }
     if (formOnce && el) opts.form = claimFormation();

@@ -55,7 +55,6 @@ export default function ContactPage() {
         </div>
         <div className="colo small" style={{ marginTop: 0 }}>
           <span>Antonio Brkić, Zagreb, Croatia</span>
-          <span>Set in Archivo. The field is curl noise on a 2D canvas.</span>
         </div>
       </main>
     </>
