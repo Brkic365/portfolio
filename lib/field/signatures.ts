@@ -30,6 +30,8 @@ export const SIGNATURES = {
   stream: { tint: 0.4, fade: 0.55, about: 'A monitoring graph' },
   /** Stocks Royale: price ticks, flat runs broken by sudden jumps. */
   tick: { tint: 0.5, fade: 0.6, about: 'Price ticks' },
+  /** Sada: long parallel rays at the sun's angle, slowed to a crawl in blocky shade. */
+  sun: { tint: 0.55, fade: 0.5, about: 'Sun between buildings' },
 } as const;
 
 export type Signature = keyof typeof SIGNATURES;

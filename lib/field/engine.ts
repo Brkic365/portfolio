@@ -527,8 +527,11 @@ export function createField(canvas: HTMLCanvasElement, opt: Partial<FieldOptions
       tint += s.tint * w[k];
       fm += s.fade * w[k];
     }
-    const [wCurl, wOrbit, wGrain, wSwirl, wPulse, wBub, wGrid, wStream, wTick] = w;
-    const needCurl = wCurl + wOrbit + wPulse + wGrid > 0.001;
+    const [wCurl, wOrbit, wGrain, wSwirl, wPulse, wBub, wGrid, wStream, wTick, wSun] = w;
+    const needCurl = wCurl + wOrbit + wPulse + wGrid + wSun > 0.001;
+    // The sun's angle swings slowly, as if the clock were being dragged through the day.
+    const sunA = 0.55 + 0.28 * Math.sin(now / 7000), sunX = Math.cos(sunA), sunY = Math.sin(sunA);
+    const BS = 64 * dpr;
 
     const sc = o.scale / dpr, e = 0.6, sp = o.speed * dpr * G.speed * G.boost, dr = o.drift * dpr;
     const R = 150 * dpr, R2 = R * R;
@@ -631,6 +634,13 @@ export function createField(canvas: HTMLCanvasElement, opt: Partial<FieldOptions
         const ty = lane + walk * H * 0.14 + Noise(q * 3.1, i * 0.37, t * 12) * 2.2 * dpr;
         vx += sp * 2.3 * wTick;
         vy += (ty - y) * 0.55 * wTick;
+      }
+      if (wSun > 0.001) {
+        // Sunlight: long parallel rays. Where a blocky noise says a building stands,
+        // the light is in shade and the ray slows to a crawl, so blocks read as gaps.
+        const shade = Noise(Math.floor(x / BS) * 0.9, Math.floor(y / BS) * 0.9, 5.3) > 0.18 ? 0.3 : 1;
+        vx += (sunX * sp * 2.3 * shade + cx * sp * 0.12) * wSun;
+        vy += (sunY * sp * 2.3 * shade + cy * sp * 0.12) * wSun;
       }
       if (mouse.on) {
         const dx = x - mouse.x, dy = y - mouse.y, d2 = dx * dx + dy * dy;
