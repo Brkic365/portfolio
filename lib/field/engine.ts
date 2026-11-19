@@ -86,8 +86,12 @@ export interface FieldOptions {
 }
 
 export interface FieldHandle {
-  /** Ease into another signature over 600ms. */
-  morph(sig: Signature): void;
+  /** Ease into another signature over 600ms, optionally in a new colour (#rrggbb). */
+  morph(sig: Signature, accent?: string): void;
+  /** Set the trail opacity outside the mask (the whole field, for a plain one). */
+  level(a: number): void;
+  /** Move the field and its trails by (dx, dy) CSS px, e.g. to follow scroll. */
+  shift(dx: number, dy: number): void;
   /** A vortex that decays over about 1.5s. CSS px relative to the canvas. */
   vortex(x: number, y: number): void;
   /** Stream particles out of a box (CSS px, relative to the canvas). */
@@ -324,6 +328,7 @@ export function createField(canvas: HTMLCanvasElement, opt: Partial<FieldOptions
   let formT0 = 0;
   let formP = 0;
   let outsideNow = o.outside;
+  let shiftX = 0, shiftY = 0;
   let insideNow = 1;
   let resolveReady: () => void = () => {};
   const ready = new Promise<void>((r) => (resolveReady = r));
@@ -724,9 +729,11 @@ export function createField(canvas: HTMLCanvasElement, opt: Partial<FieldOptions
         });
 
   const handle: FieldHandle = {
-    morph(name) {
+    morph(name, accent) {
       const k = SIGNATURE_KEYS.indexOf(name);
-      if (k < 0 || name === sigNow) return;
+      if (k < 0) return;
+      if (accent) acc[k] = hexToRgb(accent);
+      if (name === sigNow) return;
       sigNow = name;
       wFrom.set(w);
       wTo.fill(0);
@@ -740,6 +747,32 @@ export function createField(canvas: HTMLCanvasElement, opt: Partial<FieldOptions
         tc.clearRect(0, 0, W, H);
         settle(Math.round(o.still / 2));
       }
+      wake();
+    },
+    level(a) {
+      if (a === o.outside) return;
+      o.outside = a;
+      if (!forming) outsideNow = a;
+      // The loop recomposes every frame; when it is not running (reduced motion, idle), do it now.
+      if (f.built && !f.off && !raf) compose();
+    },
+    shift(dx, dy) {
+      if (reduced() || o.frozen || f.off || !f.built) return;
+      // Whole device pixels only, so the trail buffer never resamples (and blurs) as it moves.
+      shiftX += dx * dpr;
+      shiftY += dy * dpr;
+      const ox = Math.round(shiftX), oy = Math.round(shiftY);
+      if (!ox && !oy) return;
+      shiftX -= ox;
+      shiftY -= oy;
+      for (let i = 0; i < N; i++) {
+        X[i] += ox; PX[i] += ox;
+        Y[i] += oy; PY[i] += oy; Y0[i] += oy;
+      }
+      tc.globalCompositeOperation = 'copy';
+      tc.drawImage(trail, ox, oy);
+      tc.globalCompositeOperation = 'source-over';
+      if (!raf) compose();
       wake();
     },
     vortex(x, y) {

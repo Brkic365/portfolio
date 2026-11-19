@@ -52,7 +52,7 @@ export default function TavolaPage() {
         />
       )}
 
-      <Band accent={p.accent} sig={p.sig} />
+      <Band />
 
       <section className="sec wrap" aria-labelledby="idea-h">
         <SectionHead id="idea-h" title="The point" accent={p.accent} note="Portion transparency, not AR for its own sake." />
@@ -76,7 +76,7 @@ export default function TavolaPage() {
         <Steps items={steps} />
       </section>
 
-      <Band accent={p.accent} sig={p.sig} />
+      <Band />
 
       <section className="sec wrap" aria-labelledby="app-h">
         <SectionHead id="app-h" title="A full app, not a demo page" size="mid" />

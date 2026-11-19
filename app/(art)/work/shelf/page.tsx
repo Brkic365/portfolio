@@ -43,7 +43,7 @@ export default function ShelfPage() {
         />
       )}
 
-      <Band accent={p.accent} sig={p.sig} />
+      <Band />
 
       <section className="sec wrap" aria-labelledby="q-h">
         <SectionHead id="q-h" title="The question" accent={p.accent} note="Recipe sites answer the wrong one." />
@@ -87,7 +87,7 @@ export default function ShelfPage() {
         </div>
       </section>
 
-      <Band accent={p.accent} sig={p.sig} />
+      <Band />
 
       <section className="sec wrap" aria-labelledby="data-h">
         <SectionHead id="data-h" title="The data" accent={p.accent} note="The difficulty is in the data rather than the maths." />

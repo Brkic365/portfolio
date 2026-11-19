@@ -57,7 +57,7 @@ export default function VectraXRPage() {
         <Frame src={p.image} alt="The Vectra XR configurator" url={p.url} href={`https://${p.url}`} priority />
       )}
 
-      <Band accent={p.accent} sig={p.sig} />
+      <Band />
 
       <section className="sec wrap" aria-labelledby="prob-h">
         <SectionHead id="prob-h" title="The problem" accent={p.accent} note="Five-figure decisions, sold with photos." />
@@ -112,7 +112,7 @@ export default function VectraXRPage() {
         />
       </section>
 
-      <Band accent={p.accent} sig={p.sig} />
+      <Band />
 
       <section className="sec wrap" aria-labelledby="eng-h">
         <SectionHead id="eng-h" title="Engineering" accent={p.accent} note="A browser tab on a phone the customer already owns." />
