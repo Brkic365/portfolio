@@ -134,11 +134,11 @@ export default async function Home() {
               <p className="big">
                 I build web apps, front to back. Most of what I actually know came from making things
                 that had to work for someone other than me, whether that was a paying client, a course
-                deadline or a group of friends who wanted to settle an argument.
+                deadline or a hackathon jury.
               </p>
               <p>
-                The work I enjoy most has something moving in it. Prices arriving over a socket, a
-                camera counting reps, traffic rerouting itself around a closed road. Those problems have
+                The work I enjoy most has something moving in it. Wind readings coming in from coastal
+                stations, shadows sweeping across a city model, traffic rerouting around a closed road. Those problems have
                 a right answer you can measure, and they break in interesting ways when you get them
                 wrong.
               </p>

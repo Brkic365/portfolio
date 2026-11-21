@@ -1,7 +1,9 @@
+import Link from 'next/link';
 import type { ReactNode } from 'react';
 import PageSignature from '@/components/field/PageSignature';
 import Band from '@/components/site/Band';
 import CaseHero from '@/components/site/CaseHero';
+import ExtArrow from '@/components/site/ExtArrow';
 import NextProject from '@/components/site/NextProject';
 import SiteFooter from '@/components/site/SiteFooter';
 import { nextProject, type Project } from '@/data/projects';
@@ -30,7 +32,18 @@ export default function CaseStudy({
       <CaseHero project={project} {...hero} />
       <main>
         {children}
-        {end ?? (next && <NextProject project={next} />)}
+        {end ??
+          (next ? (
+            <NextProject project={next} />
+          ) : (
+            // Pages listed under More work sit outside the chain, so they lead back instead.
+            <nav className="backrow wrap small" aria-label="More">
+              <Link href="/#work">&larr; Back to selected work</Link>
+              <a className="ul" href={`https://${project.url}/`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--paper)' }}>
+                {project.urlLabel === 'Source' ? 'Source' : 'Open it'} <ExtArrow />
+              </a>
+            </nav>
+          ))}
       </main>
       <Band />
       <SiteFooter accent={project.accent} />
