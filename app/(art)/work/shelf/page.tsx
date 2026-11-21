@@ -90,11 +90,11 @@ export default function ShelfPage() {
       <Band />
 
       <section className="sec wrap" aria-labelledby="data-h">
-        <SectionHead id="data-h" title="The data" accent={p.accent} note="The difficulty is in the data rather than the maths." />
+        <SectionHead id="data-h" title="The data" accent={p.accent} />
         <div className="prose">
           <div />
           <div className="txt">
-            <p className="big">Most of the difficulty is in the data rather than the maths.</p>
+            <p className="big">The maths is simple. The recipe data is not.</p>
             <p>
               Recipe sources name the same thing a dozen ways, so the ingredient list has to be
               normalised into a single vocabulary before any of the counting means anything. Get that

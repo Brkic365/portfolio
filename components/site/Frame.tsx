@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import ExtArrow from './ExtArrow';
 import type { ReactNode } from 'react';
 
 /**
@@ -46,7 +47,7 @@ export default function Frame({
             </span>
             {href ? (
               <a className="url" href={href} target="_blank" rel="noopener noreferrer">
-                {url} <span aria-hidden="true">↗</span>
+                {url} <ExtArrow />
               </a>
             ) : (
               <span className="url">{url}</span>

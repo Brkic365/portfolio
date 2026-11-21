@@ -62,13 +62,13 @@ export default function StolarijaPage() {
       <Band />
 
       <section className="sec wrap" aria-labelledby="job-h">
-        <SectionHead id="job-h" title="The job" accent={p.accent} note="Built to order, so the site sells the work rather than listing stock." />
+        <SectionHead id="job-h" title="The job" accent={p.accent} />
         <div className="prose">
           <div />
           <div className="txt">
             <p className="big">
-              The workshop builds furniture to order, so the site had to sell the work rather than list
-              stock.
+              The workshop builds furniture to order. There is no stock to list, so the site shows
+              finished pieces and takes enquiries.
             </p>
             <p>
               Behind the public pages there is an admin area where staff handle inventory, orders and
@@ -83,19 +83,18 @@ export default function StolarijaPage() {
       </section>
 
       <section className="sec flush wrap" aria-labelledby="wait-h">
-        <SectionHead id="wait-h" title="The hard bit" size="mid" />
+        <SectionHead id="wait-h" title="Still waiting" size="mid" />
         <div className="prose">
-          <p className="label small">It is not the code</p>
+          <p className="label small">Content</p>
           <div className="txt">
             <p>
-              That last part has been the hard bit, and it is not the code. The web shop cannot open
+              The web shop cannot open
               until the client photographs their products and writes descriptions for them, and how
-              good the whole thing looks rests on that. It is the first project I have built that sits
-              finished, waiting on someone else.
+              good the whole thing looks depends on that. The code has been done for a while.
             </p>
             <p className="big">
-              If I did it again I would start collecting the product content in week one instead of
-              leaving it to the end.
+              If I did it again I would start collecting the product content in week one, not leave it to
+              the end.
             </p>
           </div>
         </div>

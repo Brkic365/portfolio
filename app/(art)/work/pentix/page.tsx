@@ -38,7 +38,7 @@ export default function PentixPage() {
         title: 'Pentix',
         k: 0.2461,
         km: 0.2461,
-        lead: 'A bet with your friends that a camera keeps honest, instead of the honour system.',
+        lead: 'Bet your friends push-ups, and let the phone camera do the counting.',
         role: 'Personal project, sole developer',
       }}
     >
@@ -59,16 +59,16 @@ export default function PentixPage() {
       <Band />
 
       <section className="sec wrap" aria-labelledby="dev-h">
-        <SectionHead id="dev-h" title="On the device" accent={p.accent} note="A product decision before it was a technical one." />
+        <SectionHead id="dev-h" title="On the device" accent={p.accent} />
         <div className="prose">
           <div />
           <div className="txt">
             <p className="big">
-              Running the model on the phone was a product decision before it was a technical one.
+              The pose model runs on the phone. No video leaves it.
             </p>
             <p>
               Uploading video would have meant storage costs, a moderation problem, and asking people to
-              hand over footage of themselves. Keeping it on the device removed all three.
+              hand over footage of themselves. Running it locally avoids all three.
             </p>
           </div>
         </div>
@@ -80,7 +80,7 @@ export default function PentixPage() {
           <p className="label small">One threshold</p>
           <div className="txt">
             <p>
-              The hard part was deciding what counts as a rep. It comes down to one number: how far your
+              Counting reps comes down to one number: how far your
               elbow has to bend before the app accepts the push-up. Set it too loose and half reps count,
               which defeats the point. Set it too strict and good reps get ignored, so people end up
               doing more push-ups than they actually owe.

@@ -32,7 +32,7 @@ export const ContactFormEmail = ({
             <Preview>{`New message from ${name}: ${subject}`}</Preview>
             <Body style={main}>
                 <Container style={container}>
-                    <Heading style={h1}>New Contact Message 📬</Heading>
+                    <Heading style={h1}>New message from your site</Heading>
                     <Text style={text}>
                         You received a new message from your portfolio contact form.
                     </Text>

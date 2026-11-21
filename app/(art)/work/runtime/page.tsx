@@ -82,7 +82,7 @@ export default function RuntimePage() {
       <Band />
 
       <section className="sec wrap" aria-labelledby="brief-h">
-        <SectionHead id="brief-h" title="Both ends" accent={p.accent} note="Treblle set the brief: build something useful for API monitoring." />
+        <SectionHead id="brief-h" title="Both ends" accent={p.accent} />
         <div className="prose">
           <div />
           <div className="txt">
@@ -90,7 +90,7 @@ export default function RuntimePage() {
             <p>
               Requests pass through an Express proxy that logs them, scores each one for security
               problems, resolves the caller to a rough location, and rolls the results up into
-              pre-computed metrics so the dashboard is reading summaries rather than recomputing on
+              pre-computed metrics, so the dashboard reads summaries and does not recompute on
               every load. The Next.js front end sits on top of that.
             </p>
           </div>
@@ -98,12 +98,12 @@ export default function RuntimePage() {
       </section>
 
       <section className="sec flush wrap" aria-labelledby="day-h">
-        <SectionHead id="day-h" title="What a deadline that short changes" size="mid" />
+        <SectionHead id="day-h" title="Looking back" size="mid" />
         <div className="prose">
-          <p className="label small">In hindsight</p>
+          <p className="label small">24 hours</p>
           <div className="txt">
             <p>
-              A deadline that short changes how you work. Aggregating metrics up front was the decision
+              Aggregating metrics up front was the decision
               that paid off, since it meant the dashboard stayed fast without any caching work. The one
               I regret is hard-coding every threshold and time window to whatever looked reasonable at
               3am, because nothing is configurable without a redeploy.

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import ExtArrow from '@/components/site/ExtArrow';
 import CaseStudy from '@/components/site/CaseStudy';
 import Facts from '@/components/site/Facts';
 import Frame from '@/components/site/Frame';
@@ -64,7 +65,7 @@ export default function StocksRoyalePage() {
         <nav className="backrow wrap small" aria-label="More">
           <Link href="/#work">&larr; Back to selected work</Link>
           <a className="ul" href={`https://${p.url}/`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--paper)' }}>
-            Open it <span aria-hidden="true">↗</span>
+            Open it <ExtArrow />
           </a>
         </nav>
       }
