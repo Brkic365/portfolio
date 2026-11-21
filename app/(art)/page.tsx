@@ -3,6 +3,7 @@ import Link from 'next/link';
 import FieldCanvas from '@/components/field/FieldCanvas';
 import Gallery from '@/components/field/Gallery';
 import Band from '@/components/site/Band';
+import ExtArrow from '@/components/site/ExtArrow';
 import SectionHead from '@/components/site/SectionHead';
 import SiteFooter from '@/components/site/SiteFooter';
 import TopNav from '@/components/site/TopNav';
@@ -37,7 +38,7 @@ const experience: Role[] = [
     period: '2021 to now',
     role: 'Full-stack developer, freelance',
     org: 'Self-employed',
-    note: 'Client work end to end: scoping, build, testing, deployment and maintenance in production. Branch workflow with pull requests, and GitHub Actions so projects deploy on merge rather than by hand.',
+    note: 'Client work end to end: scoping, build, testing, deployment and maintenance in production. Branch workflow with pull requests, and GitHub Actions so projects deploy on merge.',
   },
   {
     period: 'Dec 2025 to now',
@@ -78,7 +79,7 @@ export default async function Home() {
           </span>
         </h1>
         <div className="hero-foot wrap">
-          <p className="hero-lead">I build software with something moving in it.</p>
+          <p className="hero-lead">I build web apps, mostly ones with live data or 3D in them.</p>
           <div className="hero-side small">
             <p>Full-stack developer in Zagreb. Open to full-time roles.</p>
             <div className="acts">
@@ -102,7 +103,7 @@ export default async function Home() {
             Employment goes above About. It is the part a recruiter is
             scanning for and the part a portfolio usually leaves out.    */}
         <section className="sec wrap" id="experience" aria-labelledby="exp-h">
-          <SectionHead id="exp-h" title="Experience" note="Where I have been paid to build and test software." />
+          <SectionHead id="exp-h" title="Experience" />
           {experience.map((e) => (
             <div className="job" key={e.role}>
               <div className="when">{e.period}</div>
@@ -133,11 +134,11 @@ export default async function Home() {
               <p className="big">
                 I build web apps, front to back. Most of what I actually know came from making things
                 that had to work for someone other than me, whether that was a paying client, a course
-                deadline or a group of friends who wanted to settle an argument.
+                deadline or a hackathon jury.
               </p>
               <p>
-                The work I enjoy most has something moving in it. Prices arriving over a socket, a
-                camera counting reps, traffic rerouting itself around a closed road. Those problems have
+                The work I enjoy most has something moving in it. Wind readings coming in from coastal
+                stations, shadows sweeping across a city model, traffic rerouting around a closed road. Those problems have
                 a right answer you can measure, and they break in interesting ways when you get them
                 wrong.
               </p>
@@ -149,8 +150,8 @@ export default async function Home() {
               </p>
               <p>
                 Four months as the only QA engineer on a mobile app changed how I write my own code.
-                Testing, reproducing a defect properly and reading someone else&rsquo;s work carefully
-                are habits now rather than things I mean to get around to. What I want next is a team
+                I test my own work now, write proper reproduction steps, and read other people&rsquo;s
+                code more carefully. What I want next is a team
                 where someone more experienced reviews what I write.
               </p>
               <dl className="facts small">
@@ -167,7 +168,7 @@ export default async function Home() {
 
         {/* ── More work ──────────────────────────────────────────────── */}
         <section className="sec flush wrap more" aria-labelledby="more-h">
-          <SectionHead id="more-h" title="More work" size="mid" knockout note="Smaller projects, client sites and studies." />
+          <SectionHead id="more-h" title="More work" size="mid" knockout />
           <ul>
             {more.map((m) => (
               <li key={m.name}>
@@ -179,7 +180,7 @@ export default async function Home() {
                 ) : (
                   <a href={m.href} target="_blank" rel="noopener noreferrer">
                     <b>
-                      {m.name} <span className="ext" aria-hidden="true">↗</span>
+                      {m.name} <ExtArrow className="ext" />
                     </b>
                     <span>{m.note}</span>
                   </a>

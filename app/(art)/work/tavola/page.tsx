@@ -56,17 +56,17 @@ export default function TavolaPage() {
       <Band />
 
       <section className="sec wrap" aria-labelledby="idea-h">
-        <SectionHead id="idea-h" title="The point" accent={p.accent} note="Portion transparency, not AR for its own sake." />
+        <SectionHead id="idea-h" title="Why" accent={p.accent} />
         <div className="prose">
           <div />
           <div className="txt">
             <p className="big">
-              The interesting part is not the AR. It is portion transparency. Menu photography is shot
-              to flatter, so the gap between the picture and the plate is where complaints come from.
+              Menu photos are shot to flatter, and the gap between the picture and the plate is where
+              most complaints start.
             </p>
             <p>
-              If a guest can see the real size, weight and how many people it serves before ordering,
-              that argument does not happen.
+              So each dish is shown in AR at its real size, next to its weight and how many people it
+              feeds. The guest sees what they are getting before they order it.
             </p>
           </div>
         </div>
@@ -80,25 +80,24 @@ export default function TavolaPage() {
       <Band />
 
       <section className="sec wrap" aria-labelledby="app-h">
-        <SectionHead id="app-h" title="A full app, not a demo page" size="mid" />
+        <SectionHead id="app-h" title="Behind the menu" size="mid" />
         <div className="prose">
-          <p className="label small">Behind the menu</p>
+          <p className="label small">Admin and viewer</p>
           <div className="txt">
             <p>
-              It is a full app rather than a demo page. Restaurants sign in, add and reorder dishes,
+              Restaurants sign in, add and reorder dishes,
               upload the models, and print a QR code per table. Every AR launch is recorded, which is
               the number that tells you whether guests actually use it or just tap once out of
               curiosity.
             </p>
             <p>
               The AR itself leans on <code>model-viewer</code>, which hands off to Scene Viewer on
-              Android and Quick Look on iOS. That was a deliberate choice over building the viewer
-              myself. Native handoff gets accurate real-world scale and lighting for free, and on a
-              phone at a dinner table that matters more than control over the render.
+              Android and Quick Look on iOS. I did not write my own viewer. The native ones already get
+              real-world scale and lighting right, which is what matters on a phone at a dinner table.
             </p>
             <p className="note small">
-              <b>Heads up:</b> it runs on demo data. The dishes are examples and the models are
-              stand-ins rather than real scanned food, so treat the portions as a demonstration of the
+              It runs on demo data. The dishes are examples and the models are
+              stand-ins, not scanned food, so treat the portions as a demonstration of the
               idea.
             </p>
           </div>

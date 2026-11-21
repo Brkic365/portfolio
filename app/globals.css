@@ -1686,3 +1686,10 @@ html[data-vt] .vt-title a {
     scroll-behavior: auto !important;
   }
 }
+
+/* The drawn off-site arrow sits on the text baseline like the glyph it replaced. */
+.ext-arrow {
+  display: inline-block;
+  vertical-align: 0.05em;
+  margin-left: 0.15em;
+}

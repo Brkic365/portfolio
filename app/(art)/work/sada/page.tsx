@@ -86,7 +86,7 @@ export default function SadaPage() {
       <section className="sec flush wrap" aria-labelledby="seat-h">
         <SectionHead id="seat-h" title="Where the tables are" size="mid" />
         <div className="prose">
-          <p className="label small">An assumption, said out loud</p>
+          <p className="label small">An assumption</p>
           <div className="txt">
             <p>
               OpenStreetMap puts most cafés as a point inside their building, where it is always shade. So for a

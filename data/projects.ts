@@ -98,38 +98,6 @@ export const projects: Project[] = [
     lift: false,
     sig: 'swirl',
     accent: '#14917f',
-    featured: true,
-  },
-  {
-    slug: 'pentix',
-    name: 'Pentix',
-    line: 'Counts push-up reps through your phone camera',
-    tag: 'Personal',
-    role: 'Personal',
-    stack: 'Next.js, MediaPipe, Supabase',
-    url: 'pentix.eu',
-    urlLabel: 'Live',
-    image: '/projects/pentix.png',
-    size: [2529, 1341],
-    lift: true,
-    sig: 'pulse',
-    accent: '#7b63ff',
-    featured: false,
-  },
-  {
-    slug: 'shelf',
-    name: 'Shelf',
-    line: 'What you can pour from the bottles you already own',
-    tag: 'Personal',
-    role: 'Personal',
-    stack: 'Next.js, TypeScript',
-    url: 'cocktailshelf.vercel.app',
-    urlLabel: 'Live',
-    image: '/projects/cocktailshelf.png',
-    size: [2539, 1320],
-    lift: true,
-    sig: 'bubble',
-    accent: '#3fa06a',
     featured: false,
   },
   {
@@ -146,7 +114,7 @@ export const projects: Project[] = [
     lift: true,
     sig: 'grid',
     accent: '#4fc3ff',
-    featured: true,
+    featured: false,
   },
   {
     slug: 'runtime',
@@ -162,7 +130,7 @@ export const projects: Project[] = [
     lift: true,
     sig: 'stream',
     accent: '#2fb5a3',
-    featured: true,
+    featured: false,
   },
   {
     slug: 'sada',
@@ -179,22 +147,6 @@ export const projects: Project[] = [
     sig: 'sun',
     accent: '#f2b330',
     featured: true,
-  },
-  {
-    slug: 'stocks-royale',
-    name: 'Stocks Royale',
-    line: 'A trading game on simulated market data',
-    tag: 'College',
-    role: 'College',
-    stack: 'Next.js, Node, PostgreSQL, Socket.io',
-    url: 'stocks-royale.vercel.app',
-    urlLabel: 'Live',
-    image: '/projects/stocks-royale.png',
-    size: [2337, 1335],
-    lift: true,
-    sig: 'tick',
-    accent: '#3fd680',
-    featured: false,
   },
 ];
 
@@ -233,16 +185,12 @@ export interface MoreItem {
 }
 
 export const more: MoreItem[] = [
-  // Kept its full page; it just no longer earns a slot in the gallery.
-  { name: 'Stocks Royale', note: 'A trading game on simulated market data', href: '/work/stocks-royale', internal: true },
-  { name: 'Pentix', note: 'Counts push-up reps through your phone camera', href: '/work/pentix', internal: true },
-  { name: 'Shelf', note: 'What you can pour from the bottles you already own', href: '/work/shelf', internal: true },
-  { name: 'AI MotionMetrics', note: 'Rep tracking in the browser with TensorFlow.js', href: 'https://ai-motion-metrics.vercel.app/' },
-  { name: 'EBankc', note: 'A decentralised finance banking concept', href: 'https://ebankc.vercel.app/' },
-  { name: 'RocketWizard', note: 'Copy-trading SaaS with crypto billing', href: 'https://rocket-wizard.vercel.app/' },
+  // These keep their full pages but sit outside the gallery.
+  { name: 'Tavola', note: 'Restaurant menus that show a dish at true size in AR', href: '/work/tavola', internal: true },
+  { name: 'RouteMaster', note: 'Traffic simulation and routing in plain Python, for college', href: '/work/route-master', internal: true },
+  { name: 'Runtime', note: 'An API monitoring dashboard built at a 24-hour hackathon', href: '/work/runtime', internal: true },
+  // Client sites.
+  { name: 'RocketWizard', note: 'Copy-trading SaaS with crypto billing, for a client', href: 'https://rocket-wizard.vercel.app/' },
   { name: 'Digital Era', note: 'Marketing site for a consultancy', href: 'https://www.the-digital-era.com/' },
   { name: 'by Marro', note: 'Portfolio for a freelance photographer', href: 'https://bymarro.vercel.app/' },
-  { name: 'SiteBoost', note: 'Landing page for website audits', href: 'https://site-boost.vercel.app/' },
-  { name: 'LuxuryPerspective', note: 'A premium real estate UI study', href: 'https://luxury-perspective.vercel.app/' },
-  { name: 'DreamFinders', note: 'Search-driven property browsing', href: 'https://dream-finders.vercel.app/' },
 ];
